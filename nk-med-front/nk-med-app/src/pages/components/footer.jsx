@@ -1,20 +1,28 @@
 import React from "react";
 // Importamos los íconos necesarios de react-icons
-import { FaInstagram, FaWhatsapp, FaPhone } from "react-icons/fa6";
+import { FaInstagram, FaWhatsapp, FaPhone} from "react-icons/fa6";
+import { SiGmail } from "react-icons/si";
 
 export default function Footer() {
   // Array actualizado: solo Instagram y WhatsApp
   const socialLinks = [
     {
       name: "Instagram",
-      href: "https://instagram.com/tu_cuenta",
+      href: "https://www.instagram.com/ambos_nkmed",
       icon: <FaInstagram size="1.2em" />,
     },
     {
       name: "WhatsApp",
-      href: "https://wa.me/5493871234567", // Reemplaza con tu número real
+      href: "https://wa.me/5493875875938", // Reemplaza con tu número real
       icon: <FaWhatsapp size="1.2em" />,
     },
+    {
+      name: "",
+      href:"mailto:Nkmed1925@gmail.com", // Reemplaza con tu número real
+      icon: <SiGmail size="1.2em"/>,
+      text:   <span > </span>,
+
+    }
   ];
 
   return (
@@ -35,16 +43,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* SECCIÓN CENTRAL: Contacto Directo */}
-          <div className="flex flex-col items-center space-y-4">
-            <a 
-              href="tel:+5493871234567" 
-              className="flex items-center gap-3 bg-teal-950 px-6 py-3 hover:bg-teal-900 transition-colors duration-300 border border-white/10 text-sm font-light tracking-widest uppercase"
-            >
-              <FaPhone className="text-teal-700" />
-              <span>+54 9 387 123 4567</span>
-            </a>
-          </div>
+          
 
           {/* SECCIÓN DERECHA: Redes Sociales */}
           <div className="flex flex-col items-center md:items-end space-y-4">
@@ -57,12 +56,21 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="p-3 bg-white/10 rounded-full hover:bg-white/20 hover:text-teal-400 transition-all duration-300"
+                  className="p-3 bg-white/10 rounded-full  hover:bg-white/20  hover:text-teal-400 transition-all duration-300"
                 >
+                    <div className=" flex ">
+                    <div>
                   {social.icon}
+                    </div>
+                    <div className="">
+                  {social.text}
+                    </div>
+                    </div>
                 </a>
+                
               ))}
             </div>
+            <div className=""><p>ambosnkmed@gmail.com</p></div>
           </div>
 
         </div>
