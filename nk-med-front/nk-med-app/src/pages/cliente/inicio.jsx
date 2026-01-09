@@ -116,7 +116,7 @@ export default function Inicio() {
       >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative w-full text-center flex items-center justify-center px-6 py-10 ">
-          <div className="w-md justify-center lg:mt-30 px-6 py-10 bg-white/40 ">
+          <div className="w-md justify-center lg:mt-30 sm:mt-20 px-6 py-10 bg-white/40 ">
             <h1 className="font font-bold text-5xl lg:mb-3 text-white drop-shadow-lg">NK MED</h1>
             <h1 className="font-serif font-light text-5xl mb-8 text-white drop-shadow-lg">UNIFORMES CLÍNICOS</h1>
             <Link to="/catalogo" className="bg-[#2D3A30] font-serif hover:bg-[#1e2620] inline-block text-white px-10 py-3 font-light tracking-widest text-sm uppercase">
