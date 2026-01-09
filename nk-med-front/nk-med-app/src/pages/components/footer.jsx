@@ -70,7 +70,7 @@ export default function Footer() {
                 
               ))}
             </div>
-            <div className=""><p>ambosnkmed@gmail.com</p></div>
+            <div className=""><p>Nkmed1925@gmail.com</p></div>
           </div>
 
         </div>
