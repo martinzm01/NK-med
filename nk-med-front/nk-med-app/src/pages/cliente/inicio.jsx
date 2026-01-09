@@ -106,7 +106,7 @@ export default function Inicio() {
   const anteriorS3 = () => setIndiceS3((prev) => (prev === 0 ? slidesS3.length - 1 : prev - 1));
 
   return (
-    <div className="bg-teal-950 lg:py-5 sm:py-1">
+    <div className="bg-black lg:pt-5 sm:pt-2">
       <Navbar />
 
 {/* --- SECCIÓN 1: DISEÑO ORIGINAL EN LAPTOP / CENTRADO EN MÓVIL --- */}
@@ -133,7 +133,6 @@ export default function Inicio() {
     </div>
   </div>
 </div>
-
 
       <main className="min-h-screen font-serif bg-white">
         
@@ -190,8 +189,8 @@ export default function Inicio() {
             <ChevronRight className="w-10 h-10" />
           </button>
         </section>
-        <Footer/>
       </main>
+        <Footer/>
 
       <ProductModal isOpen={modalOpen} onClose={() => setModalOpen(false)} data={modalData} />
     </div>
