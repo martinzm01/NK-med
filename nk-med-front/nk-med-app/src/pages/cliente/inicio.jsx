@@ -132,6 +132,7 @@ export default function Inicio() {
   </div>
 </div>
 
+
       <main className="min-h-screen font-serif bg-white">
         
         {/* SECCIÓN 2 */}
