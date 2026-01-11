@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import TarjetaProducto from "./components/cardSimple";
-import Navbar from "./components/nav";
+import TarjetaProducto from "../components/cardSimple";
 
 const PRODUCTOS_MOCK = [
   { id: 1, nombre: "Ambo Classic", precio: "45.00", color: "Bordó", imagen: "assets/c6.jpg", categoria: "Ambos",genero:"Unisex" },
@@ -39,7 +38,6 @@ const limpiarFiltros = () => {
 };
   return (
     <div className="min-h-screen relative bg-white w-full text-black flex flex-col items-center justify-start  py-5">
-      <Navbar />
 
       {/* Contenedor principal con max-width para centrar el contenido general */}
       <div className="w-full max-w-[1400px] lg:px-4 lg:pb-4 sm:pb-1">
@@ -149,8 +147,8 @@ const limpiarFiltros = () => {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setGeneroSel("Todos")}
-                      className={`text-[10px] uppercase tracking-widest py-2 border ${
-                        generoSel === "Todos" ? 'bg-black text-white border-black' : 'text-gray-500 bg-white border-gray-200'
+                      className={`text-[10px] uppercase tracking-widest   py-2 border ${
+                        generoSel === "Todos" ? 'bg-black text-white border-black' : 'text-gray-500 cursor-pointer bg-white border-gray-200'
                       }`}
                     >
                       Todos
@@ -182,7 +180,7 @@ const limpiarFiltros = () => {
 
           {/* Grid de productos - Columnas simétricas */}
           <main>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 lg:gap-x-10  gap-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-10 sm:px-10">
               {productosFiltrados.map((producto) => (
                 <TarjetaProducto 
                   key={producto.id}

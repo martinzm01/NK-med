@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../components/nav";
 import React from 'react';
 import { ChevronLeft, ChevronRight, Plus, X, CheckCircle2 } from "lucide-react";
-import Footer from "../components/footer";
+import Footer from "../../components/footer";
 
 // 1. DATOS DEL CARRUSEL SECCIÓN 3 (Incluye el diseño claro y oscuro)
 const slidesS3 = [
@@ -107,7 +106,6 @@ export default function Inicio() {
 
   return (
     <div className="bg-black lg:pt-5 sm:pt-2">
-      <Navbar />
 
 {/* --- SECCIÓN 1: DISEÑO ORIGINAL EN LAPTOP / CENTRADO EN MÓVIL --- */}
 <div 
@@ -133,6 +131,7 @@ export default function Inicio() {
     </div>
   </div>
 </div>
+
 
       <main className="min-h-screen font-serif bg-white">
         
