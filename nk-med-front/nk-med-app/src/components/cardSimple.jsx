@@ -3,19 +3,23 @@ import { Link } from "react-router-dom";
 export default function TarjetaProducto({ id, nombre, precio, color, imagen }) {
   return (
     <div className="group relative">
-      {/* Imagen del Producto */}
-      <img
-        src={imagen}
-        alt={nombre}
-        className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-120"
-      />
+      {/* Imagen del Producto - Se mantiene tu estilo exacto */}
+      <div className="overflow-hidden rounded-md bg-white">
+        <img
+          src={imagen}
+          alt={nombre}
+          className="lg:aspect-auto aspect-square w-full object-cover group-hover:opacity-75 lg:max-h-80 transition-opacity duration-300"
+        />
+      </div>
       
       {/* Contenedor de Información */}
       <div className="mt-4 flex justify-between">
         <div>
           <h3 className="text-sm text-gray-700">
+            {/* El Link ahora apunta a la ruta dinámica /producto/:id */}
             <Link to={`/producto/${id}`}>
-              <span aria-hidden="true" className="absolute inset-0"></span>
+              {/* Esta span hace que TODO el área de la card sea clickeable sin cambiar el diseño */}
+              <span aria-hidden="true" className="absolute inset-0" />
               {nombre}
             </Link>
           </h3>

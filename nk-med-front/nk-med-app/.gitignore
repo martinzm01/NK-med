@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variables de entorno (Supabase y otros)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# Si usas el CLI de Supabase
+supabase/.temp/
+supabase/migrations/.DS_Store
