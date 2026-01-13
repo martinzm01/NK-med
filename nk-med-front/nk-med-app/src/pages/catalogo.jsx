@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import TarjetaProducto from "../components/cardSimple";
-
+import Footer from "../components/footer";
 const CATEGORIAS = ["Ambos", "Chaquetas", "Pantalones"];
 const GENEROS = ["Hombre", "Mujer",];
 
@@ -56,7 +56,9 @@ export default function CatalogoProductos() {
   }
 
   return (
-    <div className="min-h-screen bg-white w-full text-black flex flex-col items-center py-5 mt-5">
+    <div className="w-full">
+
+    <div className="min-h-screen bg-white w-full text-black flex flex-col items-center  py-5 mt-5 mb-5">
       
       {/* 1. Ajuste de Padding: px-4 en móvil, px-20 en desktop */}
       <div className="w-full max-w-[1400px] px-10 md:px-20">
@@ -69,15 +71,15 @@ export default function CatalogoProductos() {
             <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold">Categoría:</span>
             <div className="flex flex-wrap gap-2">
                 {["Todos", ...CATEGORIAS].map((cat) => (
-                <button
-                    key={cat}
-                    onClick={() => setCategoriaSel(cat)}
-                    className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
+                  <button
+                  key={cat}
+                  onClick={() => setCategoriaSel(cat)}
+                  className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
                     categoriaSel === cat 
-                        ? "bg-black text-white border-black font-bold shadow-sm" 
-                        : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
-                    }`}
-                >
+                    ? "bg-black text-white border-black font-bold shadow-sm" 
+                    : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
+                  }`}
+                  >
                     {cat}
                 </button>
                 ))}
@@ -89,15 +91,15 @@ export default function CatalogoProductos() {
             <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold md:pl-5">Género:</span>
             <div className="flex flex-wrap gap-2">
                 {["Todos", ...GENEROS].map((gen) => (
-                <button
+                  <button
                     key={gen}
                     onClick={() => setGeneroSel(gen)}
                     className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
-                    generoSel === gen 
-                        ? "bg-teal-700 text-white border-teal-700 font-bold shadow-sm" 
-                        : "bg-white text-gray-400 border-gray-100 hover:border-teal-700 hover:text-teal-700"
+                      generoSel === gen 
+                      ? "bg-teal-700 text-white border-teal-700 font-bold shadow-sm" 
+                      : "bg-white text-gray-400 border-gray-100 hover:border-teal-700 hover:text-teal-700"
                     }`}
-                >
+                    >
                     {gen}
                 </button>
                 ))}
@@ -117,8 +119,8 @@ export default function CatalogoProductos() {
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-12 lg:grid-cols-4">
             {productosFiltrados.map((producto) => (
               <TarjetaProducto 
-                key={producto.id}
-                {...producto}
+              key={producto.id}
+              {...producto}
               />
             ))}
           </div>
@@ -131,5 +133,7 @@ export default function CatalogoProductos() {
         </main>
       </div>
     </div>
+      <Footer/>
+  </div>
   );
 }
