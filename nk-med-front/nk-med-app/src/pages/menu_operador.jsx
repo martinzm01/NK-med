@@ -14,26 +14,6 @@ export default function PanelOperador() {
     // algo de forma absoluta DENTRO de este div. Para 'fixed', no es
     // necesario, pero es una buena práctica.
     className="min-h-screen relative bg-cover bg-center  w-full  via-gray-950 to-black text-white flex flex-col items-center justify-center px-6 py-10">
-    
-    {/* --- INICIO: Logo en la esquina --- */}
-    {/*
-      - fixed:  Posición fija en la ventana.
-      - top-5:  A 1.25rem (20px) del borde superior.
-      - left-5: A 1.25rem (20px) del borde izquierdo.
-    */}
-    <div className="fixed top-5 left-5">
-        {/*
-          - La ruta 'assets/iconologo.png' asume que está en la carpeta 'public/assets',
-            igual que tu 'fondo.png'.
-          - w-24 es 6rem (96px). Puedes ajustarlo (ej: w-20, w-28).
-        */}
-        <img 
-            src="assets/iconologo.png" 
-            alt="Logo" 
-            className="w-40 h-auto" 
-        />
-    </div>
-    {/* --- FIN: Logo en la esquina --- */}
 
 
     {/* Título principal adaptado al rol */}
@@ -46,13 +26,13 @@ export default function PanelOperador() {
         
         {/* Frame 1: Mapa de Ocupación */}
         <Link
-        to="/catalogo"
+        to="/panelcatalogo"
         className="group bg-gray-950/50 hover:bg-gray-700/50 rounded-2xl shadow-lg p-8 text-center flex flex-col items-center transition-transform transform hover:scale-105"
         >
         <ShoppingCart className="w-16 h-16 mb-4 text-blue-400 group-hover:animate-pulse" />
-        <h2 className="text-2xl font-medium mb-2 font-serif">Realizar una Venta</h2>
+        <h2 className="text-2xl font-medium mb-2 font-serif">Gestion de productos</h2>
         <p className="text-gray-300 text-sm">
-            Entra aquí para ver el catalogo y realizar una venta.
+            Entra aquí para administrar el catálogo.
         </p>
         </Link>
 
