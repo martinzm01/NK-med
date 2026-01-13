@@ -1,33 +1,35 @@
 import { Link } from "react-router-dom";
 
-export default function TarjetaProducto({ id, nombre, precio, color, imagen }) {
+// Agregamos 'genero' a las desestructuración de props
+export default function TarjetaProducto({ id, nombre, precio, color, imagen, genero }) {
   return (
     <div className="group relative">
-      {/* Imagen del Producto - Se mantiene tu estilo exacto */}
-      <div className="overflow-hidden rounded-md bg-white">
+      {/* Contenedor de Imagen con position relative para ubicar la etiqueta */}
+      <div className="relative overflow-hidden rounded-md bg-white">
         <img
           src={imagen}
           alt={nombre}
           className="lg:aspect-auto aspect-square w-full object-cover group-hover:opacity-75 lg:h-80 transition-opacity duration-300"
         />
+        
+        {/* Etiqueta de Género - Posicionada exactamente como en el detalle */}
+        <div className="absolute bottom-4 left-2 bg-white/90 backdrop-blur px-3 py-1.5 text-[9px] uppercase tracking-widest text-teal-900 border border-teal-900/10 shadow-sm z-10">
+          {genero || "Unisex"}
+        </div>
       </div>
       
       {/* Contenedor de Información */}
       <div className="mt-4 flex justify-between">
         <div>
           <h3 className="text-sm text-gray-700">
-            {/* El Link ahora apunta a la ruta dinámica /producto/:id */}
             <Link to={`/producto/${id}`}>
-              {/* Esta span hace que TODO el área de la card sea clickeable sin cambiar el diseño */}
               <span aria-hidden="true" className="absolute inset-0" />
               {nombre}
             </Link>
           </h3>
-          {/* Campo Color */}
           <p className="mt-1 text-sm text-gray-500">{color}</p>
         </div>
         
-        {/* Campo Precio */}
         <p className="text-sm font-medium text-gray-900">${precio}</p>
       </div>
     </div>

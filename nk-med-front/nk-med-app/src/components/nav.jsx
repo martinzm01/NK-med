@@ -47,7 +47,7 @@ export default function Navbar() {
   ];
 
   if (role === 'admin') {
-    navLinks.push({ href: "/panelCatalogo", label: "Panel Catálogo" });
+    navLinks.push({ href: "/panelCatalogo", label: "Admin" });
   }
 
   const handleLogout = async () => {
