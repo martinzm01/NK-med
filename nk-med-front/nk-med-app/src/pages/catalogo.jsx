@@ -58,58 +58,63 @@ export default function CatalogoProductos() {
   return (
     <div className="min-h-screen bg-white w-full text-black flex flex-col items-center py-5 mt-5">
       
-      <div className="w-full max-w-[1400px] px-20">
+      {/* 1. Ajuste de Padding: px-4 en móvil, px-20 en desktop */}
+      <div className="w-full max-w-[1400px] px-10 md:px-20">
         
-
-
-        {/* --- NUEVO CONTENEDOR DE FILTROS SUPERIORES --- */}
-        <div className="flex  gap-6 border-b  border-gray-100  mt-23">
+        {/* 2. Ajuste de Filtros: flex-col en móvil para que no se amontonen */}
+        <div className="flex flex-col md:flex-row gap-6 border-b border-gray-100 mt-12 md:mt-23 pb-6 md:pb-0">
           
           {/* Filtro por Categoría */}
-          <div className="flex flex-wrap gap-3 items-center pr-10">
-            <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-24 font-bold">Categoría:</span>
-            {["Todos", ...CATEGORIAS].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategoriaSel(cat)}
-                className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
-                  categoriaSel === cat 
-                    ? "bg-black text-white border-black font-bold shadow-sm" 
-                    : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-3 items-center md:pr-10">
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold">Categoría:</span>
+            <div className="flex flex-wrap gap-2">
+                {["Todos", ...CATEGORIAS].map((cat) => (
+                <button
+                    key={cat}
+                    onClick={() => setCategoriaSel(cat)}
+                    className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
+                    categoriaSel === cat 
+                        ? "bg-black text-white border-black font-bold shadow-sm" 
+                        : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
+                    }`}
+                >
+                    {cat}
+                </button>
+                ))}
+            </div>
           </div>
 
           {/* Filtro por Género */}
-          <div className="flex flex-wrap gap-3 items-center pl-10">
-            <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-24 font-bold pl-5">Género:</span>
-            {["Todos", ...GENEROS].map((gen) => (
-              <button
-                key={gen}
-                onClick={() => setGeneroSel(gen)}
-                className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
-                  generoSel === gen 
-                    ? "bg-teal-700 text-white border-teal-700 font-bold shadow-sm" 
-                    : "bg-white text-gray-400 border-gray-100 hover:border-teal-700 hover:text-teal-700"
-                }`}
-              >
-                {gen}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-3 items-center md:pl-10">
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold md:pl-5">Género:</span>
+            <div className="flex flex-wrap gap-2">
+                {["Todos", ...GENEROS].map((gen) => (
+                <button
+                    key={gen}
+                    onClick={() => setGeneroSel(gen)}
+                    className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
+                    generoSel === gen 
+                        ? "bg-teal-700 text-white border-teal-700 font-bold shadow-sm" 
+                        : "bg-white text-gray-400 border-gray-100 hover:border-teal-700 hover:text-teal-700"
+                    }`}
+                >
+                    {gen}
+                </button>
+                ))}
+            </div>
           </div>
         </div>
-                    {/* Título */}
-        <div className="flex flex-col items-center justify-center lg:mt-10 mt-5 mb-16">
-          <h2 className="text-2xl font-sans font-semibold tracking-[0.2em] border-b pb-2 px-2   text-black uppercase">
+
+        {/* Título */}
+        <div className="flex flex-col items-center justify-center lg:mt-10 mt-1  mb-10 md:mb-16">
+          <h2 className="text-xl md:text-2xl font-sans font-semibold tracking-[0.2em] border-b pb-2 px-2 text-black uppercase">
             C A T Á L O G O
           </h2>
         </div>
-        {/* Grid de productos */}
+
+        {/* 3. Grid de productos: gap más pequeño en móvil para ganar espacio */}
         <main>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-12 lg:grid-cols-4">
             {productosFiltrados.map((producto) => (
               <TarjetaProducto 
                 key={producto.id}
