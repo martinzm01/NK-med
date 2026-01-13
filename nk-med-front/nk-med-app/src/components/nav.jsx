@@ -27,7 +27,7 @@ export default function Navbar() {
 
   // Agregamos el link de Panel Operador SOLO si es admin
   if (role === 'admin') {
-    navLinks.push({ href: "/panelOperador", label: "Panel Admin" });
+    navLinks.push({ href: "/panelCatalogo", label: "Panel Catálogo" });
   }
 
 

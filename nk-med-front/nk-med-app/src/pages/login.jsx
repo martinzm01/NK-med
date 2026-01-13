@@ -51,18 +51,20 @@ export default function Login() {
     }
   };
 
-
+        {/*backgroundImage:"url('assets/fondo.png')",
+        backgroundBlendMode: "darken",*/ }
 
   return (
     <div> 
     <div 
     style={{
-        backgroundImage:"url('assets/fondo.png')",
-        backgroundBlendMode: "darken", 
+      backgroundImage:"url('assets/fondo.png')",
+        backgroundBlendMode: "darken",
         backgroundColor:"rgba(0, 0, 0, 0.3)"
+
     }} 
-    className="flex min-h-screen bg-cover  flex-col justify-center px-6 py-4 lg:px-8 bg-teal-950">
-    <div className='border border-white/40 bg-white/10 px-4  mt-10 sm:mx-auto sm:w-full sm:max-w-sm  rounded-xl  '>
+    className="flex min-h-screen bg-cover  flex-col justify-center px-6 py-4 lg:px-8 bg-[CEE3E8]">
+    <div className='border border-white/30  bg-sky-100/10  px-4  mt-10 sm:mx-auto sm:w-full sm:max-w-sm  rounded-xl '>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm  ">
         <img 
               src="/assets/iconologo.png" 
