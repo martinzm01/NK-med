@@ -42,7 +42,7 @@ const handleLogout = async () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-black/80 backdrop-blur-md shadow-sm py-1"
-          : "bg-teal-950/97 dark:bg-black/90 lg:pt-4 lg:pb-2 py-2"
+          : "bg-black/80 dark:bg-black/90 lg:pt-4 lg:pb-2 py-2"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -95,7 +95,7 @@ const handleLogout = async () => {
 
       {/* Menú móvil desplegable */}
       {isMenuOpen && (
-        <div className="bg-teal-950/97 backdrop-blur-md md:hidden border-t border-white/10">
+        <div className="bg-black/70 backdrop-blur-md md:hidden border-t border-white/10">
           <div className="space-y-1 px-6 pb-6 pt-4">
             {navLinks.map((link) => (
               <Link
