@@ -109,7 +109,7 @@ export default function Inicio() {
 
 {/* --- SECCIÓN 1: DISEÑO ORIGINAL EN LAPTOP / CENTRADO EN MÓVIL --- */}
 <div 
-  className="lg:mt-25 py-10 min-h-screen relative bg-cover bg-center w-full transition-all duration-1000 ease-in-out flex items-center lg:items-start justify-center" 
+  className="lg:mt-20 py-10 min-h-screen relative bg-cover bg-center w-full transition-all duration-1000 ease-in-out flex items-center lg:items-start justify-center" 
   style={{ backgroundImage: `url('${imagenes[indice]}')` }}
 >
   <div className="absolute inset-0 bg-black/20"></div>

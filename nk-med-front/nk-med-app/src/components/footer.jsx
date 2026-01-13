@@ -13,12 +13,12 @@ export default function Footer() {
     },
     {
       name: "WhatsApp",
-      href: "https://wa.me/5493875875938", // Reemplaza con tu número real
+      href: "https://wa.me/5493875875938", // numero de texmaigel
       icon: <FaWhatsapp size="1.2em" />,
     },
     {
-      name: "",
-      href:"mailto:Nkmed1925@gmail.com", // Reemplaza con tu número real
+      name: "Email",
+      href:"mailto:Nkmed1925@gmail.com", //email
       icon: <SiGmail size="1.2em"/>,
       text:   <span > </span>,
 
