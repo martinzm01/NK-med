@@ -176,18 +176,18 @@ const filteredProducts = productos.filter(p => {
 
   return cumpleBusqueda && cumpleCategoria && cumpleGenero;
 });
-  return (
-    <div className="min-h-screen bg-gray-50 p-6 pt-25">
+return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 pt-20 md:pt-25">
       <div className="max-w-7xl mx-auto">
         
         {/* Header con estética del catálogo */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-[0.2em] uppercase mt-10">Administración</h1>
-            <p className="text-gray-500 text-sm uppercase tracking-widest mt-1"></p>
+            <h1 className="text-2xl font-semibold tracking-[0.2em] uppercase mt-4 md:mt-10">Administración</h1>
           </div>
           
-            <div className="relative flex md:w-64 mt-10">
+          <div className="flex flex-col md:flex-row w-full md:w-auto items-center gap-4">
+            <div className="relative flex w-full md:w-64 md:mt-10">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <input 
                 type="text" 
@@ -197,24 +197,22 @@ const filteredProducts = productos.filter(p => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-          <div className="flex gap-4 w-full lg:mt-10 md:w-auto">
-    
-
-          </div>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="bg-[#5A848D] text-white px-6 py-2  mt-10 text-xs tracking-widest uppercase cursor-pointer hover:bg-[#405F64] transition-all flex items-center gap-2"
+              className="w-full md:w-auto bg-[#5A848D] text-white px-6 py-2 md:mt-10 text-xs tracking-widest uppercase cursor-pointer hover:bg-[#405F64] transition-all flex items-center justify-center gap-2"
             >
               <Plus size={14} /> Nuevo
             </button>
+          </div>
         </div>
 
-          {/* Contenedor de Filtros */}
-          <div className="flex  gap-4 border-b border-gray-100 pb-8 mb-2">
-            
-            {/* Filtro por Categoría */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <span className="text-[9px] uppercase tracking-[0.2em] text-gray-700 w-24">Categoría:</span>
+        {/* CONTENEDOR DE FILTROS (Igual a la página de referencia) */}
+        <div className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-6 mb-8">
+          
+          {/* Filtro por Categoría */}
+          <div className="flex flex-wrap gap-3 items-center md:pr-10">
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold">Categoría:</span>
+            <div className="flex flex-wrap gap-2">
               {["Todos", ...CATEGORIAS].map((cat) => (
                 <button
                   key={cat}
@@ -229,10 +227,12 @@ const filteredProducts = productos.filter(p => {
                 </button>
               ))}
             </div>
-          
-            {/* Filtro por Género */}
-            <div className="flex flex-wrap gap-3 items-center ml-20">
-              <span className="text-[9px] uppercase tracking-[0.2em] text-gray-700 w-24">Género:</span>
+          </div>
+
+          {/* Filtro por Género */}
+          <div className="flex flex-wrap gap-3 items-center md:pl-10">
+            <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold md:pl-5">Género:</span>
+            <div className="flex flex-wrap gap-2">
               {["Todos", ...GENEROS].map((gen) => (
                 <button
                   key={gen}
@@ -246,43 +246,54 @@ const filteredProducts = productos.filter(p => {
                   {gen}
                 </button>
               ))}
-  </div>
-</div>
-        {/* Tabla de Productos */}
-        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Imagen</th>
-                <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Nombre</th>
-                <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Categoría</th>
-                <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Género</th>
-                <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Precio</th>
-                <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filteredProducts.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="p-4">
-                    <img src={p.imagenes?.[0]} alt="" className="w-12 h-12 object-cover rounded-sm border border-gray-100" />
-                  </td>
-                  <td className="p-4 text-xs font-medium uppercase tracking-wider">{p.nombre}</td>
-                  <td className="p-4 text-[10px] text-gray-500 uppercase tracking-widest">{p.categoria}</td>
-                  <td className="p-4 text-[10px] text-gray-500 uppercase tracking-widest">{p.genero}</td>
-                  <td className="p-4 text-xs font-bold">${p.precio}</td>
-                  <td className="p-4 flex gap-3">
-                    <button onClick={() => handleEdit(p)} className="text-gray-400 hover:text-black transition-all">
-                      <Edit size={16} />
-                    </button>
-                    <button onClick={() => handleDelete(p.id)} className="text-gray-400 hover:text-red-600 transition-all cursor-pointer">
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabla de Productos - Agregado scroll horizontal y responsividad */}
+        <div className="bg-white border border-gray-100 shadow-sm overflow-hidden rounded-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[600px]">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Imagen</th>
+                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Nombre</th>
+                  <th className="hidden md:table-cell p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Categoría</th>
+                  <th className="hidden sm:table-cell p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Género</th>
+                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Precio</th>
+                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Stock</th>
+                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 ">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {filteredProducts.map((p) => (
+                  <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="p-4">
+                      <img src={p.imagenes?.[0]} alt="" className="w-10 h-10 md:w-12 md:h-12 object-cover rounded-sm border border-gray-100" />
+                    </td>
+                    <td className="p-4">
+                      <div className="text-xs font-medium uppercase tracking-wider">{p.nombre}</div>
+                      <div className="md:hidden text-[9px] text-gray-400 uppercase mt-1">{p.categoria} | {p.genero}</div>
+                    </td>
+                    <td className="hidden md:table-cell p-4 text-[10px] text-gray-500 uppercase tracking-widest">{p.categoria}</td>
+                    <td className="hidden sm:table-cell p-4 text-[10px] text-gray-500 uppercase tracking-widest">{p.genero}</td>
+                    <td className="p-4 text-xs font-bold text-teal-900">${p.precio}</td>
+                    <td className="p-4 text-xs  text-teal-900">{p.stock}</td>
+                    <td className="p-4">
+                      <div className="flex  gap-3">
+                        <button onClick={() => handleEdit(p)} className="text-gray-400 hover:text-black transition-all">
+                          <Edit size={16} />
+                        </button>
+                        <button onClick={() => handleDelete(p.id)} className="text-gray-400 hover:text-red-600 transition-all cursor-pointer">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 {/* Modal de Gestión */}
 {isModalOpen && (
