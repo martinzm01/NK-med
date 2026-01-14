@@ -158,7 +158,7 @@ const DetalleProducto = () => {
              <ul className="space-y-2 mt-1 text-[11px] text-slate-500 uppercase tracking-widest font-sans">{renderCaracteristicas()}</ul>
           </div>
           <div className="flex flex-col gap-4">
-            <a href={`https://wa.me/5493875875938?text=Me%20interesa%20el%20producto%20${producto.nombre}`} target="_blank" rel="noopener noreferrer" className="bg-[#5A848D] text-white py-4 md:py-5 px-8 uppercase tracking-[0.2em] text-[11px] font-bold hover:bg-[#3F5F64]/90 transition-all shadow-lg text-center">
+            <a href={`https://wa.me/5493875875938?text=Me%20interesa%20el%20producto%20${producto.nombre}`} target="_blank" rel="noopener noreferrer" className="bg-[#3F5F64] text-white py-4 md:py-5 px-8 uppercase tracking-[0.2em] text-[11px] font-bold hover:bg-[#3F5F64]/85 transition-all shadow-lg text-center">
               Consultar disponibilidad
             </a>
           </div>

@@ -1,150 +1,181 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para redirigir
-import { supabase } from '../lib/supabase';    // Tu cliente configurado
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import Footer from '../components/footer';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState(null); // Estado para mostrar errores
-  const [loading, setLoading] = useState(false); // Estado de carga
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [formData, setFormData] = useState({ 
+    email: '', 
+    password: '',
+    nombre: '',
+    apellido: ''
+  });
+  
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Detiene la recarga del formulario inmediatamente
     setLoading(true);
     setError(null);
 
-    // 1. Intentar iniciar sesión en Supabase
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
+    try {
+      if (isRegistering) {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              nombre: formData.nombre,
+              apellido: formData.apellido,
+            },
+          },
+        });
 
-    if (authError) {
-      setError("Credenciales inválidas");
+        if (signUpError) throw signUpError;
+
+        alert(
+          "¡Registro casi completado! 📧\n\n" +
+          "Hemos enviado un correo de confirmación a " + formData.email + ".\n" +
+          "Por favor, revisa tu bandeja de entrada para activar tu cuenta."
+        );
+        
+        setIsRegistering(false);
+        setFormData({ email: '', password: '', nombre: '', apellido: '' });
+      } else {
+        const { data, error: authError } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (authError) throw new Error("Credenciales inválidas o correo no confirmado.");
+
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profileError) throw new Error("Error al obtener perfil.");
+
+        profile.role === 'admin' ? navigate('/panelOperador') : navigate('/inicio');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setLoading(false);
-      return;
-    }
-
-    // 2. Si el login es exitoso, buscamos el rol en la tabla 'profiles'
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
-
-    if (profileError) {
-      setError("Error al obtener perfil");
-      setLoading(false);
-      return;
-    }
-
-    // 3. Redirección lógica según el rol
-    if (profile.role === 'admin') {
-      navigate('/panelOperador');
-    } else {
-      navigate('/inicio');
     }
   };
 
-        {/*backgroundImage:"url('assets/fondo.png')",
-        backgroundBlendMode: "darken",*/ }
-
   return (
     <div> 
-    <div 
-    style={{
-      backgroundImage:"url('assets/fondo.png')",
-        backgroundBlendMode: "darken",
-        backgroundColor:"rgba(0, 0, 0, 0.3)"
-
-    }} 
-    className="flex min-h-screen bg-cover  flex-col justify-center px-6 py-4 lg:px-8 bg-[CEE3E8]">
-    <div className='border border-white/30  bg-sky-100/10  px-4  mt-10 sm:mx-auto sm:w-full sm:max-w-sm  rounded-xl '>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm  ">
-        <img 
-              src="/assets/iconologo.png" 
-              alt="Logo" 
-              className="h-auto w-24 lg:w-30 object-content  " 
-            />
-        <h2 className="  text-3xl  font-light font-serif  px-4 tracking-tight   text-white">
-          Inicia sesión 
-        </h2>
-      </div>
-
-      <div className=" sm:mx-auto sm:w-full sm:max-w-sm  p-4">
-      
-      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-    
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-100">
-              Correo electrónico
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                autoComplete="email"
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm"
-              />
-            </div>
+      <div 
+        style={{
+          backgroundImage:"url('assets/fondo.png')",
+          backgroundBlendMode: "darken",
+          backgroundColor:"rgba(0, 0, 0, 0.3)"
+        }} 
+        className="flex min-h-screen bg-cover flex-col justify-center px-6 py-4 lg:px-8 bg-[CEE3E8]">
+        
+        <div className='border border-white/30 bg-sky-100/10 px-4 mt-10 sm:mx-auto sm:w-full sm:max-w-sm rounded-xl '>
+          <div className="sm:mx-auto sm:w-full sm:max-w-sm ">
+            <img src="/assets/iconologo.png" alt="Logo" className="h-auto w-24 lg:w-30 object-content" />
+            <h2 className="text-3xl font-light font-serif px-4 tracking-tight text-white">
+              {isRegistering ? "Crea tu cuenta" : "Inicia sesión"}
+            </h2>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-100">
-                Contraseña
-              </label>
-              <div className="text-sm">
-                <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
-                  ¿Olvidaste tu contraseña?
-                </a>
+          <div className="sm:mx-auto sm:w-full sm:max-w-sm p-4">
+            {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {isRegistering && (
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-100">Nombre</label>
+                    <input
+                      name="nombre"
+                      type="text"
+                      required
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      className="mt-2 block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 outline-white/10 focus:outline-teal-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-100">Apellido</label>
+                    <input
+                      name="apellido"
+                      type="text"
+                      required
+                      value={formData.apellido}
+                      onChange={handleChange}
+                      className="mt-2 block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 outline-white/10 focus:outline-teal-500 sm:text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-100">Correo electrónico</label>
+                <div className="mt-2">
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 outline-white/10 focus:outline-teal-500 sm:text-sm"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="mt-2">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="current-password"
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm"
-              />
-            </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full justify-center rounded-md bg-indigo-700 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors disabled:opacity-50"
-            >
-              {loading ? "Cargando..." : "Entrar"}
-            </button>
-          </div>
-        </form>
+              <div>
+                <label className="block text-sm font-medium text-gray-100">Contraseña</label>
+                <div className="mt-2">
+                  <input
+                    name="password"
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 outline-white/10 focus:outline-teal-500 sm:text-sm"
+                  />
+                </div>
+              </div>
 
-        <p className="mt-10 text-center text-sm text-gray-400">
-          ¿No tienes cuenta?{' '}
-          <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300">
-            Registrate
-          </a>
-        </p>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full justify-center rounded-md bg-teal-700 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500/70 cursor-pointer disabled:opacity-50 transition-colors"
+              >
+                {loading ? "Cargando..." : (isRegistering ? "Registrarse" : "Entrar")}
+              </button>
+            </form>
+
+            <p className="mt-10 text-center text-sm text-gray-400">
+              {isRegistering ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{' '}
+              <button 
+                type="button" // <--- Importante: evita que se envíe el form
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsRegistering(!isRegistering);
+                  setError(null);
+                }}
+                className="font-semibold text-indigo-400 hover:text-indigo-300 bg-transparent border-none cursor-pointer"
+              >
+                {isRegistering ? "Inicia sesión" : "Registráte"}
+              </button>
+            </p>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
       <Footer/>
     </div>
   );
