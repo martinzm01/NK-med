@@ -64,7 +64,7 @@ export default function Login() {
 
         if (profileError) throw new Error("Error al obtener perfil.");
 
-        profile.role === 'admin' ? navigate('/panelOperador') : navigate('/inicio');
+        profile.role === 'admin' ? navigate('/inicio') : navigate('/inicio');
       }
     } catch (err) {
       setError(err.message);
