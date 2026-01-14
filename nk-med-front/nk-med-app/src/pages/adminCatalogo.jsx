@@ -296,284 +296,172 @@ return (
           </div>
         </div>
 {/* Modal de Gestión */}
-{isModalOpen && (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
-    {/* Contenedor Principal: Limitamos altura máxima y ancho */}
-    <div className="bg-white w-full max-w-5xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative animate-in fade-in zoom-in duration-300">
-      
-      {/* Botón Cerrar Absoluto */}
-      <button 
-        onClick={handleCloseModal} 
-        className="absolute top-4 right-4 z-50 p-2 bg-white/80 hover:bg-black cursor-pointer hover:text-white transition-all rounded-full"
-      >
-        <X size={20} />
-      </button>
-
-      {/* COLUMNA 1: CARRUSEL DE IMÁGENES */}
-      <div className="lg:w-1/2 bg-slate-50 relative h-[300px] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
-        {formData.imagenes && formData.imagenes.length > 0 ? (
-          <div className="w-full h-full relative">
-            <img 
-              src={
-                formData.imagenes[currentImgIndex] instanceof File 
-                  ? URL.createObjectURL(formData.imagenes[currentImgIndex]) 
-                  : formData.imagenes[currentImgIndex]
-              } 
-              alt={`Preview ${currentImgIndex}`} 
-              className="w-full h-full object-contain animate-in fade-in duration-500"
-            />
-
-            {/* Controles del Carrusel (Solo si hay más de una imagen) */}
-            {formData.imagenes.length > 1 && (
-              <>
-                <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button 
-                    type="button"
-                    onClick={() => setCurrentImgIndex((prev) => (prev === 0 ? formData.imagenes.length - 1 : prev - 1))}
-                    className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-black/70 hover:text-white transition-all"
-                  >
-                    <ChevronLeft  size={20} /> {/* Usando Edit como flecha si no tienes Chevron */}
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => setCurrentImgIndex((prev) => (prev === formData.imagenes.length - 1 ? 0 : prev + 1))}
-                    className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-black/70 hover:text-white transition-all"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-
-                {/* Indicador de posición (Puntos) con SEGURIDAD */}
-                <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-1.5">
-                  {Array.isArray(formData.imagenes) && formData.imagenes.map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={`h-1 rounded-full transition-all ${i === currentImgIndex ? 'w-6 bg-teal-600' : 'w-2 bg-teal-200'}`} 
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-          {/* Badge de info y herramientas de orden */}
-          <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3">
-            
-            <div className="flex justify-between items-center">
-              {/* Contador de imágenes */}
-              <div className="bg-white/90 backdrop-blur px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-teal-900 border border-teal-900/10 shadow-sm font-sans">
-                Imagen {currentImgIndex + 1} de {formData.imagenes.length}
-              </div>
-
-              {/* Botón Borrar */}
-              <button 
-                type="button"
-                onClick={() => {
-                  const nuevasImgs = formData.imagenes.filter((_, i) => i !== currentImgIndex);
-                  setFormData(prev => ({ ...prev, imagenes: nuevasImgs }));
-                  setCurrentImgIndex(0);
-                }}
-                className="bg-white/90 text-red-600 p-2 rounded-full cursor-pointer hover:bg-red-600 hover:text-white transition-all shadow-sm"
-              >
-                <Trash2 size={14} />
+        {isModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+            <div className="bg-white w-full max-w-5xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative animate-in fade-in zoom-in duration-300">
+              
+              <button onClick={handleCloseModal} className="absolute top-4 right-4 z-[110] p-2 bg-white/80 hover:bg-black cursor-pointer hover:text-white transition-all rounded-full">
+                <X size={20} />
               </button>
-            </div>
 
-            {/* CONTROLES DE ORDEN (Solo si hay más de una imagen) */}
-            {formData.imagenes.length > 1 && (
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  disabled={currentImgIndex === 0}
-                  onClick={() => moverImagen('izq')}
-                  className="flex-1 bg-white/90 py-2 text-[9px] uppercase tracking-widest font-bold disabled:opacity-30 hover:bg-teal-600 hover:text-white transition-all shadow-sm border border-teal-900/10"
-                >
-                  ← Definir como anterior
-                </button>
-                <button
-                  type="button"
-                  disabled={currentImgIndex === formData.imagenes.length - 1}
-                  onClick={() => moverImagen('der')}
-                  className="flex-1 bg-white/90 py-2 text-[9px] uppercase tracking-widest font-bold disabled:opacity-30 hover:bg-teal-600 hover:text-white transition-all shadow-sm border border-teal-900/10"
-                >
-                  Definir como siguiente →
-                </button>
+              {/* COLUMNA 1: IMÁGENES */}
+              <div className="w-full lg:w-1/2 bg-slate-50 relative h-[300px] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
+                {formData.imagenes && formData.imagenes.length > 0 ? (
+                  <div className="w-full h-full relative">
+                    <img 
+                      src={formData.imagenes[currentImgIndex] instanceof File ? URL.createObjectURL(formData.imagenes[currentImgIndex]) : formData.imagenes[currentImgIndex]} 
+                      alt={`Preview ${currentImgIndex}`} 
+                      className="w-full h-full object-contain animate-in fade-in duration-500"
+                    />
+
+                    {formData.imagenes.length > 1 && (
+                      <>
+                        <div className="absolute inset-0 flex items-center justify-between px-4 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity pointer-events-none">
+                          <button type="button" onClick={() => setCurrentImgIndex((prev) => (prev === 0 ? formData.imagenes.length - 1 : prev - 1))} className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-black/70 hover:text-white transition-all pointer-events-auto">
+                            <ChevronLeft size={20} />
+                          </button>
+                          <button type="button" onClick={() => setCurrentImgIndex((prev) => (prev === formData.imagenes.length - 1 ? 0 : prev + 1))} className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-black/70 hover:text-white transition-all pointer-events-auto">
+                            <ChevronRight size={20} />
+                          </button>
+                        </div>
+
+                        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-1.5">
+                          {formData.imagenes.map((_, i) => (
+                            <div key={i} className={`h-1 rounded-full transition-all ${i === currentImgIndex ? 'w-6 bg-teal-600' : 'w-2 bg-teal-200'}`} />
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3">
+                      <div className="flex justify-between items-center">
+                        <div className="bg-white/90 backdrop-blur px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-teal-900 border border-teal-900/10 shadow-sm font-sans">
+                          Imagen {currentImgIndex + 1} de {formData.imagenes.length}
+                        </div>
+                        <button type="button" onClick={() => {
+                          const nuevasImgs = formData.imagenes.filter((_, i) => i !== currentImgIndex);
+                          setFormData(prev => ({ ...prev, imagenes: nuevasImgs }));
+                          setCurrentImgIndex(0);
+                        }} className="bg-white/90 text-red-600 p-2 rounded-full cursor-pointer hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                      {formData.imagenes.length > 1 && (
+                        <div className="flex gap-2">
+                          <button type="button" disabled={currentImgIndex === 0} onClick={() => moverImagen('izq')} className="flex-1 bg-white/90 py-2 text-[9px] uppercase tracking-widest font-bold disabled:opacity-30 hover:bg-teal-600 hover:text-white transition-all shadow-sm border border-teal-900/10">← Definir como anterior</button>
+                          <button type="button" disabled={currentImgIndex === formData.imagenes.length - 1} onClick={() => moverImagen('der')} className="flex-1 bg-white/90 py-2 text-[9px] uppercase tracking-widest font-bold disabled:opacity-30 hover:bg-teal-600 hover:text-white transition-all shadow-sm border border-teal-900/10">Definir como siguiente →</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center text-slate-300">
+                    <Upload size={48} strokeWidth={1} />
+                    <p className="mt-4 text-[10px] uppercase tracking-widest">Sin imágenes</p>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center text-slate-300">
-            <Upload size={48} strokeWidth={1} />
-            <p className="mt-4 text-[10px] uppercase tracking-widest">Sin imágenes</p>
+
+              {/* COLUMNA 2: FORMULARIO */}
+              <div className="lg:w-0.8 p-6 lg:p-8 flex flex-col bg-white overflow-y-auto">
+                <form onSubmit={handleSubmit} className="space-y-5 font-serif">
+                  <header className="mb-2">
+                    <span className="text-teal-600 text-[10px] uppercase tracking-[0.3em] font-bold mb-1 block font-sans">
+                      {editingProduct ? "Editor de Catálogo" : "Nueva Pieza"}
+                    </span>
+                    <h2 className="text-2xl lg:text-3xl text-teal-950 uppercase tracking-tighter leading-tight">
+                      {formData.nombre || "Nombre del Producto"}
+                    </h2>
+                  </header>
+
+                  <div className="space-y-5 font-sans">
+                    <div className="border-b border-slate-100 pb-1">
+                      <label className="text-[9px] uppercase tracking-widest text-slate-400 block">Nombre de la prenda</label>
+                      <input name="nombre" value={formData.nombre} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-base" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="border-b border-slate-100 pb-1">
+                        <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Precio (USD)</label>
+                        <input type="number" name="precio" value={formData.precio} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
+                      </div>
+                      <div className="border-b border-slate-100 pb-1">
+                        <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Stock</label>
+                        <input type="number" name="stock" value={formData.stock} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="border-b border-slate-100 pb-1">
+                        <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Categoría</label>
+                        <select name="categoria" value={formData.categoria} onChange={handleInputChange} className="w-full bg-transparent focus:outline-none text-teal-950 text-[10px] uppercase tracking-widest">
+                          {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <div className="border-b border-slate-100 pb-1">
+                        <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Género</label>
+                        <select name="genero" value={formData.genero} onChange={handleInputChange} className="w-full py-1 bg-transparent focus:outline-none text-teal-900 text-[10px] uppercase tracking-widest">
+                          {GENEROS.map(g => <option key={g} value={g}>{g}</option>)}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="border-b border-[#CEE3E8] flex">
+                      <div className="w-full">
+                        <label className="text-[9px] uppercase tracking-widest text-slate-600 block mt-2">Variante de Color</label>
+                        <div className="flex items-center gap-3">
+                          <input type="text" name="color" value={formData.color || ""} onChange={handleInputChange} placeholder="Ej: Azul Aero..." className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-sm font-sans tracking-wide" />
+                          <div className="w-2 h-2 rounded-full border border-slate-200 shrink-0" style={{ backgroundColor: formData.color?.toLowerCase() || 'transparent' }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-b border-[#CEE3E8] pb-1">
+                      <label className="text-[9px] uppercase tracking-widest text-slate-500 block">Descripción</label>
+                      <textarea name="descripcion" value={formData.descripcion || ""} onChange={handleInputChange} rows={2} className="w-full py-1 bg-transparent focus:outline-none text-slate-600 font-serif italic text-sm leading-snug resize-none" />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Características Técnicas</label>
+                      <input type="text" className="w-full border-b border-[#CEE3E8] py-1 text-[11px] focus:outline-none bg-transparent" onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const val = e.target.value.trim();
+                          if (val) {
+                            setFormData(prev => ({...prev, caracteristicas: [...(prev.caracteristicas || []), val]}));
+                            e.target.value = "";
+                          }
+                        }
+                      }} />
+                      <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                        {formData.caracteristicas?.map((item, index) => (
+                          <span key={index} className="flex items-center gap-1 bg-teal-50 text-teal-900 px-2 py-1 rounded-sm text-[8px] uppercase tracking-widest border border-teal-100">
+                            {item}
+                            <button type="button" onClick={() => setFormData(prev => ({...prev, caracteristicas: prev.caracteristicas.filter((_, i) => i !== index)}))}>
+                              <X size={8} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <label className="flex items-center gap-3 cursor-pointer group bg-teal-50 p-3 rounded-sm border border-slate-100 hover:bg-teal-100 transition-all">
+                        <Upload size={14} className="text-teal-600" />
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-teal-900">Agregar Imagen</p>
+                        <input type='file' className="hidden" onChange={handleFileChange} accept="image/*" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <button disabled={isSubmitting} className="w-full bg-[#5A848D] text-white py-4 px-8 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-teal-900 cursor-pointer transition-all shadow-lg disabled:bg-slate-300 mt-4">
+                    {isSubmitting ? "GUARDANDO..." : (editingProduct ? "ACTUALIZAR" : "PUBLICAR")}
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         )}
-      </div>
-
-      {/* COLUMNA 2: FORMULARIO - Hacemos que esta parte tenga scroll independiente */}
-      <div className="lg:w-0.8 p-6 lg:p-8 flex flex-col bg-white overflow-y-auto">
-        <form onSubmit={handleSubmit} className="space-y-5 font-serif">
-          
-          <header className="mb-2">
-            <span className="text-teal-600 text-[10px] uppercase tracking-[0.3em] font-bold mb-1 block font-sans">
-              {editingProduct ? "Editor de Catálogo" : "Nueva Pieza"}
-            </span>
-            <h2 className="text-2xl lg:text-3xl text-teal-950 uppercase tracking-tighter leading-tight">
-              {formData.nombre || "Nombre del Producto"}
-            </h2>
-          </header>
-
-          <div className="space-y-5 font-sans">
-            {/* Input Nombre */}
-            <div className="border-b border-slate-100 pb-1">
-              <label className="text-[9px] uppercase tracking-widest text-slate-400 block">Nombre de la prenda</label>
-              <input 
-                name="nombre" 
-                value={formData.nombre} 
-                onChange={handleInputChange} 
-                required 
-                placeholder="Ej: Ambo Slim Fit"
-                className="w-full py-1 bg-transparent focus:outline-none text-teal-950 placeholder:text-slate-200 text-base" 
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div className="border-b border-slate-100 pb-1">
-                <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Precio (USD)</label>
-                <input 
-                  type="number" 
-                  name="precio" 
-                  value={formData.precio} 
-                  onChange={handleInputChange} 
-                  required 
-                  className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" 
-                />
-              </div>
-              <div className="border-b border-slate-100 pb-1">
-                <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Stock</label>
-                <input 
-                  type="number" 
-                  name="stock" 
-                  value={formData.stock} 
-                  onChange={handleInputChange} 
-                  required 
-                  className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" 
-                />
-              </div>
-            </div>
-
-            {/* Categoría y Género en una fila */}
-            <div className="grid grid-cols-2 gap-6">
-              <div className="border-b border-slate-100 pb-1">
-                <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Categoría</label>
-                <select 
-                  name="categoria" 
-                  value={formData.categoria} 
-                  onChange={handleInputChange} 
-                  className="w-full  bg-transparent focus:outline-none text-teal-950 text-[10px] uppercase tracking-widest"
-                >
-                  {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-              <div className="border-b border-slate-100 pb-1">
-                <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Género</label>
-                <select 
-                  name="genero" 
-                  value={formData.genero} 
-                  onChange={handleInputChange} 
-                  className="w-full py-1 bg-transparent focus:outline-none text-teal-900 text-[10px] uppercase tracking-widest"
-                >
-                  {GENEROS.map(g => <option key={g} value={g}>{g}</option>)}
-                </select>
-              </div>
-            </div>
-
-            {/* Campo: COLOR (Estilo Minimalista) */}
-            <div className="border-b border-[#CEE3E8] flex ">
-              <label className="text-[9px] uppercase tracking-widest text-slate-600 block mt-2">
-                Variante de Color
-              </label>
-              <div className="flex items-center gap-3">
-                <input 
-                  type="text"
-                  name="color" 
-                  value={formData.color || ""} 
-                  onChange={handleInputChange} 
-                  placeholder="Ej: Azul Aero, Bordó, Verde Cirujano..."
-                  className="w-full px-3 bg-transparent focus:outline-none text-teal-950 text-sm font-sans tracking-wide placeholder:text-gray-300" 
-                />
-                {/* Muestra un pequeño círculo del color si es un color válido de CSS */}
-                <div 
-                  className="w-2 h-2 rounded-full border border-slate-200"
-                  style={{ backgroundColor: formData.color?.toLowerCase() || 'transparent' }}
-                />
-              </div>
-            </div>
-            {/* Descripción corregida */}
-            <div className="border-b border-[#CEE3E8] pb-1">
-              <label className="text-[9px] uppercase tracking-widest text-slate-500 block">Descripción</label>
-              <textarea 
-                name="descripcion" 
-                value={formData.descripcion || ""} 
-                onChange={handleInputChange} 
-                rows={2}
-                className="w-full py-1 bg-transparent focus:outline-none text-slate-600 font-serif italic text-sm leading-snug resize-none"
-              />
-            </div>
-
-
-            {/* Características */}
-            <div className="space-y-2">
-              <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Características Técnicas</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  id="input-caracteristica"
-                  className="flex-1 border-b border-[#CEE3E8] py-1 text-[11px] focus:outline-none focus:border-[#5A848D]"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      const val = e.target.value.trim();
-                      if (val) {
-                        setFormData(prev => ({...prev, caracteristicas: [...(prev.caracteristicas || []), val]}));
-                        e.target.value = "";
-                      }
-                    }
-                  }}
-                />
-              </div>
-              <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
-                {formData.caracteristicas?.map((item, index) => (
-                  <span key={index} className="flex items-center gap-1 bg-teal-50 text-teal-900 px-2 py-1 rounded-sm text-[8px] uppercase tracking-widest border border-teal-100">
-                    {item}
-                    <button type="button" className="cursor-pointer" onClick={() => setFormData(prev => ({...prev, caracteristicas: prev.caracteristicas.filter((_, i) => i !== index)}))}>
-                      <X size={8} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Subida de Archivo más compacta */}
-            <div className="pt-2">
-              <label className="flex items-center gap-3 cursor-pointer group bg-teal-50 p-3 rounded-sm border border-slate-100 hover:bg-teal-50 transition-all">
-                <Upload size={14} className="text-teal-600" />
-                <p className="text-[9px] font-bold uppercase tracking-widest text-teal-900">Agregar Imagen</p>
-                <input type='file' className="hidden" onChange={handleFileChange} accept="image/*" />
-              </label>
-            </div>
-          </div>
-
-          <button 
-            disabled={isSubmitting}
-            className="w-full bg-[#5A848D] text-white py-4 px-8 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-teal-900  cursor-pointer  transition-all shadow-lg disabled:bg-slate-300 "
-          >
-            {isSubmitting ? "GUARDANDO..." : (editingProduct ? "ACTUALIZAR" : "PUBLICAR")}
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-)}
       </div>
     </div>
   );
