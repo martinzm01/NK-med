@@ -305,7 +305,7 @@ return (
               </button>
 
           {/* COLUMNA 1: IMÁGENES */}
-          <div className="w-full lg:w-1/2 bg-slate-50 relative h-[60vh] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
+          <div className="w-full lg:w-1/2 bg-slate-50 relative h-[75vh] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
             {/* El cambio está en: h-[60vh] en lugar de h-[300px] */}
             
             {formData.imagenes && formData.imagenes.length > 0 ? (
