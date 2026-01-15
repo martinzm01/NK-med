@@ -304,15 +304,17 @@ return (
                 <X size={20} />
               </button>
 
-              {/* COLUMNA 1: IMÁGENES */}
-              <div className="w-full lg:w-1/2 bg-slate-50 relative h-[300px] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
-                {formData.imagenes && formData.imagenes.length > 0 ? (
-                  <div className="w-full h-full relative">
-                    <img 
-                      src={formData.imagenes[currentImgIndex] instanceof File ? URL.createObjectURL(formData.imagenes[currentImgIndex]) : formData.imagenes[currentImgIndex]} 
-                      alt={`Preview ${currentImgIndex}`} 
-                      className="w-full h-full object-contain animate-in fade-in duration-500"
-                    />
+          {/* COLUMNA 1: IMÁGENES */}
+          <div className="w-full lg:w-1/2 bg-slate-50 relative h-[60vh] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
+            {/* El cambio está en: h-[60vh] en lugar de h-[300px] */}
+            
+            {formData.imagenes && formData.imagenes.length > 0 ? (
+              <div className="w-full h-full relative">
+                <img 
+                  src={formData.imagenes[currentImgIndex] instanceof File ? URL.createObjectURL(formData.imagenes[currentImgIndex]) : formData.imagenes[currentImgIndex]} 
+                  alt={`Preview ${currentImgIndex}`} 
+                  className="w-full h-full object-contain animate-in fade-in duration-500"
+                />
 
                     {formData.imagenes.length > 1 && (
                       <>
