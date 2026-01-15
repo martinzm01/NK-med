@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase"; 
-import { Search, Plus, Package, Edit, Trash2, X, Upload,ChevronRight, ChevronLeft } from "lucide-react";
+import { Search, Plus, Package, Edit, Trash2, X, Upload, ChevronRight, ChevronLeft, Filter } from "lucide-react";
 
 // Constantes para los selectores
 const CATEGORIAS = ["Ambos", "Chaquetas", "Pantalones"];
@@ -11,13 +11,13 @@ export default function PanelCatalogo() {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // NUEVO ESTADO
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("Todos");
   const [generoFiltro, setGeneroFiltro] = useState("Todos");
 
-  const [currentImgIndex, setCurrentImgIndex] = useState(0);//para el carrusel
-  // Estado del formulario
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [formData, setFormData] = useState({
     nombre: "",
     precio: 0,
@@ -29,20 +29,15 @@ export default function PanelCatalogo() {
     caracteristicas: [],
   });
 
-const moverImagen = (direccion) => {
-  const nuevasImgs = [...formData.imagenes];
-  const indexActual = currentImgIndex;
-  const nuevoIndex = direccion === 'izq' ? indexActual - 1 : indexActual + 1;
-
-  // Verificar que el movimiento sea posible
-  if (nuevoIndex < 0 || nuevoIndex >= nuevasImgs.length) return;
-
-  // Intercambiar posiciones
-  [nuevasImgs[indexActual], nuevasImgs[nuevoIndex]] = [nuevasImgs[nuevoIndex], nuevasImgs[indexActual]];
-
-  setFormData(prev => ({ ...prev, imagenes: nuevasImgs }));
-  setCurrentImgIndex(nuevoIndex); // Seguir a la imagen movida
-};
+  const moverImagen = (direccion) => {
+    const nuevasImgs = [...formData.imagenes];
+    const indexActual = currentImgIndex;
+    const nuevoIndex = direccion === 'izq' ? indexActual - 1 : indexActual + 1;
+    if (nuevoIndex < 0 || nuevoIndex >= nuevasImgs.length) return;
+    [nuevasImgs[indexActual], nuevasImgs[nuevoIndex]] = [nuevasImgs[nuevoIndex], nuevasImgs[indexActual]];
+    setFormData(prev => ({ ...prev, imagenes: nuevasImgs }));
+    setCurrentImgIndex(nuevoIndex);
+  };
 
   useEffect(() => {
     fetchProductos();
@@ -55,7 +50,6 @@ const moverImagen = (direccion) => {
         .from("productos")
         .select("*")
         .order('created_at', { ascending: false });
-
       if (error) throw error;
       setProductos(data || []);
     } catch (error) {
@@ -65,20 +59,12 @@ const moverImagen = (direccion) => {
     }
   }
 
-  // --- LÓGICA DE IMAGEN ---
   async function uploadImage(file) {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}.${fileExt}`;
-    const { error: uploadError } = await supabase.storage
-      .from('catalogo-img') // Asegúrate de que este bucket exista
-      .upload(fileName, file);
-
+    const { error: uploadError } = await supabase.storage.from('catalogo-img').upload(fileName, file);
     if (uploadError) throw uploadError;
-
-    const { data } = supabase.storage
-      .from('catalogo-img')
-      .getPublicUrl(fileName);
-
+    const { data } = supabase.storage.from('catalogo-img').getPublicUrl(fileName);
     return data.publicUrl;
   }
 
@@ -98,16 +84,13 @@ const moverImagen = (direccion) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
-      // Procesar imágenes: si son Files, subirlos; si son strings, mantenerlos
       const imageUrls = await Promise.all(
         formData.imagenes.map(async (img) => {
           if (img instanceof File) return await uploadImage(img);
           return img;
         })
       );
-
       const productData = {
         nombre: formData.nombre,
         precio: formData.precio,
@@ -119,20 +102,13 @@ const moverImagen = (direccion) => {
         descripcion: formData.descripcion,
         caracteristicas: formData.caracteristicas,
       };
-
       if (editingProduct) {
-        const { error } = await supabase
-          .from("productos")
-          .update(productData)
-          .eq("id", editingProduct.id);
+        const { error } = await supabase.from("productos").update(productData).eq("id", editingProduct.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from("productos")
-          .insert([productData]);
+        const { error } = await supabase.from("productos").insert([productData]);
         if (error) throw error;
       }
-
       handleCloseModal();
       fetchProductos();
     } catch (error) {
@@ -144,8 +120,8 @@ const moverImagen = (direccion) => {
 
   const handleEdit = (product) => {
     setEditingProduct(product);
-    setFormData({ ...product, caracteristicas: product.caracteristicas || []}); // Evita que sea null 
-    setCurrentImgIndex(0); // Empezar siempre desde la primera imagen
+    setFormData({ ...product, caracteristicas: product.caracteristicas || []}); 
+    setCurrentImgIndex(0);
     setIsModalOpen(true);
   };
 
@@ -160,32 +136,80 @@ const moverImagen = (direccion) => {
     setIsModalOpen(false);
     setEditingProduct(null);
     setCurrentImgIndex(0);
-    setFormData({ nombre: "", precio: 0, categoria: "Ambos", genero: "Unisex", color: "", stock: 0, imagenes: [], descripcion: "", caracteristicas: [] 
-  });
+    setFormData({ nombre: "", precio: 0, categoria: "Ambos", genero: "Unisex", color: "", stock: 0, imagenes: [], descripcion: "", caracteristicas: [] });
   };
-  //logica de filtrado
-const filteredProducts = productos.filter(p => {
-  // 1. Coincidencia por búsqueda (nombre)
-  const cumpleBusqueda = p.nombre.toLowerCase().includes(searchTerm.toLowerCase());
-  
-  // 2. Coincidencia por categoría
-  const cumpleCategoria = categoriaFiltro === "Todos" || p.categoria === categoriaFiltro;
 
-  // 3. Coincidencia por género
-  const cumpleGenero = generoFiltro === "Todos" || p.genero === generoFiltro;
+  const filteredProducts = productos.filter(p => {
+    const cumpleBusqueda = p.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+    const cumpleCategoria = categoriaFiltro === "Todos" || p.categoria === categoriaFiltro;
+    const cumpleGenero = generoFiltro === "Todos" || p.genero === generoFiltro;
+    return cumpleBusqueda && cumpleCategoria && cumpleGenero;
+  });
 
-  return cumpleBusqueda && cumpleCategoria && cumpleGenero;
-});
-return (
+  return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6 pt-20 md:pt-25">
+      
+      {/* MODAL DE FILTROS PARA TELÉFONOS - DISEÑO VERTICAL */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[200] md:hidden">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsMobileMenuOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-full bg-white flex flex-col animate-in slide-in-from-bottom duration-300">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+              <span className="text-xs uppercase tracking-[0.4em] font-bold text-black">Filtrar Colección</span>
+              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-gray-50 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 space-y-10">
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-bold block mb-6">Seleccionar<span className="text-black ml-3">Categoría</span></span>
+                <div className="flex flex-col gap-3">
+                  {["Todos", ...CATEGORIAS].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setCategoriaFiltro(cat)}
+                      className={`flex justify-between items-center w-full px-6 py-4 text-[11px] uppercase tracking-[0.2em] transition-all border ${
+                        categoriaFiltro === cat ? "bg-black text-white border-black font-bold" : "bg-white text-black border-gray-100"
+                      }`}
+                    >
+                      {cat}
+                      {categoriaFiltro === cat && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-bold block mb-6">Seleccionar <span className="text-black ml-3">Género</span></span>
+                <div className="flex flex-col gap-3">
+                  {["Todos", ...GENEROS].map((gen) => (
+                    <button
+                      key={gen}
+                      onClick={() => setGeneroFiltro(gen)}
+                      className={`flex justify-between items-center w-full px-6 py-4 text-[11px] uppercase tracking-[0.2em] transition-all border ${
+                        generoFiltro === gen ? "bg-black text-white border-black font-bold" : "bg-white text-black border-gray-100"
+                      }`}
+                    >
+                      {gen}
+                      {generoFiltro === gen && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-100 bg-gray-50">
+              <button onClick={() => setIsMobileMenuOpen(false)} className="w-full bg-[#5A848D] text-white py-5 text-[10px] uppercase tracking-[0.4em] font-bold shadow-xl">
+                Aplicar Filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto">
-        
-        {/* Header con estética del catálogo */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-[0.2em] uppercase mt-4 md:mt-10">Administración</h1>
           </div>
-          
           <div className="flex flex-col md:flex-row w-full md:w-auto items-center gap-4">
             <div className="relative flex w-full md:w-64 md:mt-10">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
@@ -197,19 +221,18 @@ return (
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="w-full md:w-auto bg-[#5A848D] text-white px-6 py-2 md:mt-10 text-xs tracking-widest uppercase cursor-pointer hover:bg-[#405F64] transition-all flex items-center justify-center gap-2"
-            >
-              <Plus size={14} /> Nuevo
-            </button>
+            {/* Botón original en el Header - Ahora oculto en móvil */}
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="hidden md:flex w-full md:w-auto bg-[#5A848D] text-white px-6 py-2 md:mt-10 text-xs tracking-widest uppercase cursor-pointer hover:bg-[#405F64] transition-all items-center justify-center gap-2"
+          >
+            <Plus size={14} /> Nuevo
+          </button>
           </div>
         </div>
 
-        {/* CONTENEDOR DE FILTROS (Igual a la página de referencia) */}
-        <div className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-6 mb-8">
-          
-          {/* Filtro por Categoría */}
+        {/* FILTROS PC (Original) */}
+        <div className="hidden md:flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-6 mb-8">
           <div className="flex flex-wrap gap-3 items-center md:pr-10">
             <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold">Categoría:</span>
             <div className="flex flex-wrap gap-2">
@@ -218,9 +241,7 @@ return (
                   key={cat}
                   onClick={() => setCategoriaFiltro(cat)}
                   className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
-                    categoriaFiltro === cat 
-                      ? "bg-black text-white border-black font-bold shadow-sm" 
-                      : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
+                    categoriaFiltro === cat ? "bg-black text-white border-black font-bold shadow-sm" : "bg-white text-gray-400 border-gray-100 hover:border-black hover:text-black"
                   }`}
                 >
                   {cat}
@@ -228,8 +249,6 @@ return (
               ))}
             </div>
           </div>
-
-          {/* Filtro por Género */}
           <div className="flex flex-wrap gap-3 items-center md:pl-10">
             <span className="text-xs uppercase tracking-[0.2em] text-gray-700 w-full md:w-24 font-bold md:pl-5">Género:</span>
             <div className="flex flex-wrap gap-2">
@@ -238,9 +257,7 @@ return (
                   key={gen}
                   onClick={() => setGeneroFiltro(gen)}
                   className={`text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 transition-all border ${
-                    generoFiltro === gen 
-                      ? "bg-teal-700 text-white border-teal-700 font-bold shadow-sm" 
-                      : "bg-white text-gray-400 border-gray-100 hover:border-teal-700 hover:text-teal-700"
+                    generoFiltro === gen ? "bg-teal-700 text-white border-teal-700 font-bold shadow-sm" : "bg-white text-gray-400 border-gray-100 hover:border-teal-700 hover:text-teal-700"
                   }`}
                 >
                   {gen}
@@ -250,7 +267,34 @@ return (
           </div>
         </div>
 
-        {/* Tabla de Productos - Agregado scroll horizontal y responsividad */}
+                {/* BARRA FILTROS MÓVIL (Con botón Nuevo al lado) */}
+        <div className="flex md:hidden flex-col gap-4 mb-8 border-b border-gray-100 pb-6">
+          <div className="flex flex-col">
+            <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Selección Activa</span>
+            <span className="text-[10px] uppercase tracking-widest text-black font-bold">{categoriaFiltro} / {generoFiltro}</span>
+          </div>
+          
+          <div className="flex gap-2 w-full">
+            {/* Botón Filtrar */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="flex-1 flex items-center justify-center gap-2 border border-black px-4 py-3 hover:bg-black hover:text-white transition-all shadow-sm"
+            >
+              <Filter size={14} />
+              <span className="text-[10px] uppercase tracking-[0.2em] font-bold">Filtrar</span>
+            </button>
+
+            {/* Botón Nuevo (Solo móvil) */}
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="flex-1 flex items-center justify-center gap-2 bg-[#5A848D] text-white px-4 py-3 uppercase text-[10px] tracking-[0.2em] font-bold shadow-sm"
+            >
+              <Plus size={14} /> Nuevo
+            </button>
+          </div>
+        </div>
+        
+        {/* Tabla de Productos */}
         <div className="bg-white border border-gray-100 shadow-sm overflow-hidden rounded-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[600px]">
@@ -295,27 +339,24 @@ return (
             </table>
           </div>
         </div>
-{/* Modal de Gestión */}
+
+        {/* Modal de Gestión */}
         {isModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
             <div className="bg-white w-full max-w-5xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col lg:flex-row relative animate-in fade-in zoom-in duration-300">
-              
               <button onClick={handleCloseModal} className="absolute top-4 right-4 z-[110] p-2 bg-white/80 hover:bg-black cursor-pointer hover:text-white transition-all rounded-full">
                 <X size={20} />
               </button>
 
-          {/* COLUMNA 1: IMÁGENES */}
-          <div className="w-full lg:w-1/2 bg-slate-50 relative h-[75vh] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
-            {/* El cambio está en: h-[60vh] en lugar de h-[300px] */}
-            
-            {formData.imagenes && formData.imagenes.length > 0 ? (
-              <div className="w-full h-full relative">
-                <img 
-                  src={formData.imagenes[currentImgIndex] instanceof File ? URL.createObjectURL(formData.imagenes[currentImgIndex]) : formData.imagenes[currentImgIndex]} 
-                  alt={`Preview ${currentImgIndex}`} 
-                  className="w-full h-full object-contain animate-in fade-in duration-500"
-                />
-
+              {/* COLUMNA 1: IMÁGENES */}
+              <div className="w-full lg:w-1/2 bg-slate-50 relative h-[75vh] lg:h-auto overflow-hidden flex items-center justify-center border-r border-slate-100 group">
+                {formData.imagenes && formData.imagenes.length > 0 ? (
+                  <div className="w-full h-full relative">
+                    <img 
+                      src={formData.imagenes[currentImgIndex] instanceof File ? URL.createObjectURL(formData.imagenes[currentImgIndex]) : formData.imagenes[currentImgIndex]} 
+                      alt={`Preview ${currentImgIndex}`} 
+                      className="w-full h-full object-contain animate-in fade-in duration-500"
+                    />
                     {formData.imagenes.length > 1 && (
                       <>
                         <div className="absolute inset-0 flex items-center justify-between px-4 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -326,7 +367,6 @@ return (
                             <ChevronRight size={20} />
                           </button>
                         </div>
-
                         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-1.5">
                           {formData.imagenes.map((_, i) => (
                             <div key={i} className={`h-1 rounded-full transition-all ${i === currentImgIndex ? 'w-6 bg-teal-600' : 'w-2 bg-teal-200'}`} />
@@ -334,7 +374,6 @@ return (
                         </div>
                       </>
                     )}
-
                     <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-3">
                       <div className="flex justify-between items-center">
                         <div className="bg-white/90 backdrop-blur px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-teal-900 border border-teal-900/10 shadow-sm font-sans">
@@ -375,13 +414,11 @@ return (
                       {formData.nombre || "Nombre del Producto"}
                     </h2>
                   </header>
-
                   <div className="space-y-5 font-sans">
                     <div className="border-b border-slate-100 pb-1">
                       <label className="text-[9px] uppercase tracking-widest text-slate-400 block">Nombre de la prenda</label>
                       <input name="nombre" value={formData.nombre} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-base" />
                     </div>
-
                     <div className="grid grid-cols-2 gap-6">
                       <div className="border-b border-slate-100 pb-1">
                         <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Precio (USD)</label>
@@ -392,7 +429,6 @@ return (
                         <input type="number" name="stock" value={formData.stock} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
                       </div>
                     </div>
-
                     <div className="grid grid-cols-2 gap-6">
                       <div className="border-b border-slate-100 pb-1">
                         <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Categoría</label>
@@ -407,7 +443,6 @@ return (
                         </select>
                       </div>
                     </div>
-
                     <div className="border-b border-[#CEE3E8] flex">
                       <div className="w-full">
                         <label className="text-[9px] uppercase tracking-widest text-slate-600 block mt-2">Variante de Color</label>
@@ -417,12 +452,10 @@ return (
                         </div>
                       </div>
                     </div>
-
                     <div className="border-b border-[#CEE3E8] pb-1">
                       <label className="text-[9px] uppercase tracking-widest text-slate-500 block">Descripción</label>
                       <textarea name="descripcion" value={formData.descripcion || ""} onChange={handleInputChange} rows={2} className="w-full py-1 bg-transparent focus:outline-none text-slate-600 font-serif italic text-sm leading-snug resize-none" />
                     </div>
-
                     <div className="space-y-2">
                       <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Características Técnicas</label>
                       <input type="text" className="w-full border-b border-[#CEE3E8] py-1 text-[11px] focus:outline-none bg-transparent" onKeyDown={(e) => {
@@ -446,7 +479,6 @@ return (
                         ))}
                       </div>
                     </div>
-
                     <div className="pt-2">
                       <label className="flex items-center gap-3 cursor-pointer group bg-teal-50 p-3 rounded-sm border border-slate-100 hover:bg-teal-100 transition-all">
                         <Upload size={14} className="text-teal-600" />
@@ -455,7 +487,6 @@ return (
                       </label>
                     </div>
                   </div>
-
                   <button disabled={isSubmitting} className="w-full bg-[#5A848D] text-white py-4 px-8 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-teal-900 cursor-pointer transition-all shadow-lg disabled:bg-slate-300 mt-4">
                     {isSubmitting ? "GUARDANDO..." : (editingProduct ? "ACTUALIZAR" : "PUBLICAR")}
                   </button>
