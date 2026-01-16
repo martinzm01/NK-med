@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle2, ArrowLeft, ChevronRight, ChevronLeft, Loader2, X } from 'lucide-react';
+import { CheckCircle2, ArrowLeft, ChevronRight, ChevronLeft, Loader2, X, Ruler } from 'lucide-react';
 import { supabase } from "../../lib/supabase"; 
 
 const DetalleProducto = () => {
@@ -9,6 +9,7 @@ const DetalleProducto = () => {
   const [loading, setLoading] = useState(true);
   const [imagenActiva, setImagenActiva] = useState(0);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [talleSeleccionado, setTalleSeleccionado] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -43,6 +44,10 @@ const DetalleProducto = () => {
       </li>
     ));
   };
+
+  const mensajeWhatsApp = talleSeleccionado 
+    ? `Me interesa el producto ${producto?.nombre} en talle ${talleSeleccionado}`
+    : `Me interesa el producto ${producto?.nombre}`;
 
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">
@@ -81,15 +86,15 @@ const DetalleProducto = () => {
         </Link>
       </div>
 
-      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 mt-3 gap-4 lg:gap-10 pb-12">
+      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 mt-5 gap-2 lg:gap-6 pb-5">
         
         {/* SECCIÓN IMAGEN + MINIATURAS */}
-        <section className="px-4 md:px-8 flex flex-col-reverse md:flex-row mt-5 gap-4 md:gap-6 items-center">
-          
-          {/* Columna de Miniaturas */}
-          {listaImagenes.length > 1 && (
-            <div className="flex md:flex-col gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar md:max-h-[500px]">
-              {listaImagenes.map((img, index) => (
+        <section className="px-4 md:px-8 flex flex-col-reverse mt-4 md:flex-row gap-3 md:gap-6 items-center lg:self-start lg:sticky lg:top-24">
+  
+  {/* Columna de Miniaturas */}
+  {listaImagenes.length > 1 && (
+    <div className="flex md:flex-col gap-3 w-full md:w-auto overflow-x-auto  md:pb-0 lg:mb-25 no-scrollbar md:max-h-[500px]">
+        {listaImagenes.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setImagenActiva(index)}
@@ -97,27 +102,25 @@ const DetalleProducto = () => {
                     imagenActiva === index ? 'border-teal-600 opacity-100' : 'border-slate-100 opacity-40 hover:opacity-70'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt="" className="w-full h-full object-cover " />
                 </button>
               ))}
             </div>
           )}
 
-          {/* Contenedor del Visor - MANEJO DE TAMAÑO FIJO Y BOTONES */}
-          <div className="flex-1 w-full flex items-center justify-center">
+          {/* Contenedor del Visor */}
+          <div className="flex-1 w-full flex items-center justify-center  ">
             <div 
               onClick={() => setModalAbierto(true)}
               className="relative bg-slate-50 border border-slate-100/70 rounded-md overflow-hidden shadow-sm group 
                          w-full max-w-[400px] aspect-square md:aspect-[4/5] transition-all duration-500 cursor-zoom-in flex items-center justify-center"
             >
-              {/* La imagen usa object-contain para no deformarse dentro del cuadro fijo */}
               <img 
                 src={listaImagenes[imagenActiva]} 
                 alt={producto.nombre} 
-                className="w-full h-full object-contain block transition-opacity duration-300" 
+                className="w-full h-full object-contain  block transition-opacity duration-300" 
               />
 
-              {/* Botones de Navegación - Posicionados absolutamente respecto al contenedor fijo */}
               {listaImagenes.length > 1 && (
                 <>
                   <button 
@@ -142,8 +145,8 @@ const DetalleProducto = () => {
           </div>
         </section>
 
-        {/* INFO DEL PRODUCTO (Sin cambios estéticos) */}
-        <section className="px-6 md:px-8 lg:px-12 flex flex-col justify-center mt-6 lg:mt-0">
+        {/* INFO DEL PRODUCTO */}
+        <section className="px-6 md:px-8 lg:px-14 flex flex-col justify-center mt-6 lg:mt-0">
           <div className="mb-6">
             <span className="text-teal-600 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold mb-2 block">Especificaciones</span>
             <h1 className="text-2xl md:text-3xl lg:text-5xl text-teal-950 mb-2 uppercase tracking-tighter leading-tight font-serif">{producto.nombre}</h1>
@@ -153,13 +156,37 @@ const DetalleProducto = () => {
           <div className="bg-teal-50/30 p-4 rounded-sm border-l-4 border-teal-600 mb-6 font-light italic text-sm md:text-base text-slate-600">
             "{producto.descripcion || "Diseño ergonómico pensado para la máxima movilidad profesional."}"
           </div>
+
+          {/* SECCIÓN DE TALLES */}
+          {producto.talles && Array.isArray(producto.talles) && producto.talles.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-[10px] uppercase tracking-widest text-teal-900 font-bold mb-3 flex items-center gap-2">
+                Talles Disponibles:
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {producto.talles.map((talle, index) => (
+                  <button 
+                    key={index}
+                    onClick={() => setTalleSeleccionado(talle)}
+                    className={`min-w-[45px] px-3 py-2 text-[11px] font-bold border transition-all duration-200 
+                      ${talleSeleccionado === talle 
+                        ? 'bg-teal-950 text-white border-teal-950' 
+                        : 'bg-white text-teal-950 border-slate-200 hover:border-teal-600'}`}
+                  >
+                    {talle}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mb-6">
              <h3 className="text-[10px] uppercase tracking-widest text-teal-900 font-bold mb-4">Especificaciones del artículo:</h3>
              <ul className="space-y-2 mt-1 text-[11px] text-slate-500 uppercase tracking-widest font-sans">{renderCaracteristicas()}</ul>
           </div>
           <div className="flex flex-col gap-4">
-            <a href={`https://wa.me/5493875875938?text=Me%20interesa%20el%20producto%20${producto.nombre}`} target="_blank" rel="noopener noreferrer" className="bg-[#3F5F64] text-white py-4 md:py-5 px-8 uppercase tracking-[0.2em] text-[11px] font-bold hover:bg-[#3F5F64]/85 transition-all shadow-lg text-center">
-              Consultar disponibilidad
+            <a href={`https://wa.me/5493875875938?text=${encodeURIComponent(mensajeWhatsApp)}`} target="_blank" rel="noopener noreferrer" className="bg-[#3F5F64] text-white py-4 md:py-5 px-8 uppercase tracking-[0.2em] text-[11px] font-bold hover:bg-[#3F5F64]/85 transition-all shadow-lg text-center">
+              {talleSeleccionado ? `Consultar Talle ${talleSeleccionado}` : 'Consultar disponibilidad'}
             </a>
           </div>
         </section>

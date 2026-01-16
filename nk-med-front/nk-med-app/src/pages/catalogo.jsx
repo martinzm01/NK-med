@@ -191,8 +191,14 @@ export default function CatalogoProductos() {
              <FiltrosUX />
           </div>
 
+          {/* Título */}
+          <div className="flex flex-col items-center justify-center lg:mt-5 mt-13 mb-10 md:mb-16">
+            <h2 className="text-xl md:text-2xl font-sans font-semibold tracking-[0.2em] border-b pb-2 px-2 text-black uppercase">
+              C A T Á L O G O
+            </h2>
+          </div>
           {/* FILTROS TELÉFONO: BOTÓN DE ACCESO */}
-          <div className="flex md:hidden items-center justify-between mt-15 border-b border-gray-100 pb-6">
+          <div className="flex md:hidden items-center justify-between mt-10 mb-4 border-b border-gray-100 pb-6">
             <div className="flex flex-col gap-1">
               <span className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Colección</span>
               <span className="text-[10px] uppercase tracking-widest text-black font-bold">{categoriaSel} / {generoSel}</span>
@@ -206,12 +212,6 @@ export default function CatalogoProductos() {
             </button>
           </div>
 
-          {/* Título */}
-          <div className="flex flex-col items-center justify-center lg:mt-5 mt-6 mb-10 md:mb-16">
-            <h2 className="text-xl md:text-2xl font-sans font-semibold tracking-[0.2em] border-b pb-2 px-2 text-black uppercase">
-              C A T Á L O G O
-            </h2>
-          </div>
 
           {/* Grid de productos */}
           <main>
