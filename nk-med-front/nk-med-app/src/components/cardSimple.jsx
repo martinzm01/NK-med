@@ -9,7 +9,7 @@ export default function TarjetaProducto({ id, nombre, precio, color, imagen, gen
         <img
           src={imagen}
           alt={nombre}
-          className="lg:aspect-auto aspect-square w-full object-cover group-hover:opacity-75 lg:h-80 transition-opacity duration-300"
+          className="lg:aspect-auto aspect-auto w-full object-cover group-hover:opacity-75 lg:h-80 transition-opacity duration-300"
         />
         
         {/* Etiqueta de Género - Posicionada exactamente como en el detalle */}
