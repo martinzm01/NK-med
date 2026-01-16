@@ -30,7 +30,7 @@ export default function TarjetaProducto({ id, nombre, precio, color, imagen, gen
           <p className="mt-1 text-sm text-gray-500">{color}</p>
         </div>
         
-        <p className="text-sm font-medium text-gray-900">${precio}</p>
+        <p className="text-sm  font-medium text-black mr-4">${precio}</p>
       </div>
     </div>
   );
