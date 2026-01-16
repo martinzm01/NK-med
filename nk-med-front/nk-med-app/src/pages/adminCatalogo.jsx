@@ -5,17 +5,19 @@ import { Search, Plus, Package, Edit, Trash2, X, Upload, ChevronRight, ChevronLe
 // Constantes para los selectores
 const CATEGORIAS = ["Ambos", "Chaquetas", "Pantalones"];
 const GENEROS = ["Hombre", "Mujer", "Unisex"];
+const TALLES_DISPONIBLES = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL"]; 
 
 export default function PanelCatalogo() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // NUEVO ESTADO
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("Todos");
   const [generoFiltro, setGeneroFiltro] = useState("Todos");
+  
 
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [formData, setFormData] = useState({
@@ -27,7 +29,19 @@ export default function PanelCatalogo() {
     stock: 0,
     imagenes: [], 
     caracteristicas: [],
+    talles: [], 
   });
+
+// Función para alternar talles
+  const toggleTalle = (talle) => {
+    setFormData(prev => {
+      const actuales = prev.talles || [];
+      const nuevos = actuales.includes(talle)
+        ? actuales.filter(t => t !== talle)
+        : [...actuales, talle];
+      return { ...prev, talles: nuevos };
+    });
+  };
 
   const moverImagen = (direccion) => {
     const nuevasImgs = [...formData.imagenes];
@@ -101,6 +115,7 @@ export default function PanelCatalogo() {
         imagenes: imageUrls,
         descripcion: formData.descripcion,
         caracteristicas: formData.caracteristicas,
+        talles: formData.talles,
       };
       if (editingProduct) {
         const { error } = await supabase.from("productos").update(productData).eq("id", editingProduct.id);
@@ -120,7 +135,7 @@ export default function PanelCatalogo() {
 
   const handleEdit = (product) => {
     setEditingProduct(product);
-    setFormData({ ...product, caracteristicas: product.caracteristicas || []}); 
+    setFormData({ ...product, caracteristicas: product.caracteristicas || [],talles: product.talles || [] }); 
     setCurrentImgIndex(0);
     setIsModalOpen(true);
   };
@@ -136,7 +151,7 @@ export default function PanelCatalogo() {
     setIsModalOpen(false);
     setEditingProduct(null);
     setCurrentImgIndex(0);
-    setFormData({ nombre: "", precio: 0, categoria: "Ambos", genero: "Unisex", color: "", stock: 0, imagenes: [], descripcion: "", caracteristicas: [] });
+    setFormData({ nombre: "", precio: 0, categoria: "Ambos", genero: "Unisex", color: "", stock: 0, imagenes: [], descripcion: "", caracteristicas: [],talles: [] });
   };
 
   const filteredProducts = productos.filter(p => {
@@ -429,6 +444,28 @@ export default function PanelCatalogo() {
                         <input type="number" name="stock" value={formData.stock} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
                       </div>
                     </div>
+                    {/* NUEVA SECCIÓN: GESTIÓN DE TALLES */}
+                  <div className="space-y-3">
+                    <label className="text-[9px] uppercase tracking-widest text-teal-900 font-bold block">Talles Disponibles</label>
+                    <div className="flex flex-wrap gap-2">
+                      {TALLES_DISPONIBLES.map((talle) => {
+                        const isSelected = formData.talles?.includes(talle);
+                        return (
+                          <button
+                            key={talle}
+                            type="button"
+                            onClick={() => toggleTalle(talle)}
+                            className={`min-w-[40px] px-2 py-2 text-[10px] font-bold border transition-all duration-200 
+                              ${isSelected 
+                                ? 'bg-teal-950 text-white border-teal-950' 
+                                : 'bg-white text-teal-950 border-slate-200 hover:border-teal-600'}`}
+                          >
+                            {talle}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                     <div className="grid grid-cols-2 gap-6">
                       <div className="border-b border-slate-100 pb-1">
                         <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Categoría</label>
