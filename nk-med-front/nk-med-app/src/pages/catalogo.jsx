@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import TarjetaProducto from "../components/cardSimple";
 import Footer from "../components/footer";
 import { Filter, X } from "lucide-react"; 
+import { useSearchParams } from "react-router-dom";
 
 const CATEGORIAS = ["Ambos", "Chaquetas", "Pantalones"];
 const GENEROS = ["Hombre", "Mujer"];
@@ -13,6 +14,7 @@ export default function CatalogoProductos() {
   const [categoriaSel, setCategoriaSel] = useState("Todos");
   const [generoSel, setGeneroSel] = useState("Todos");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     async function fetchProductos() {
@@ -40,6 +42,16 @@ export default function CatalogoProductos() {
     fetchProductos();
   }, []);
 
+
+useEffect(() => {
+    const catQuery = searchParams.get("categoria");
+    const genQuery = searchParams.get("genero");
+
+    if (catQuery) setCategoriaSel(catQuery);
+    if (genQuery) setGeneroSel(genQuery);
+  }, [searchParams]);
+
+  
   const productosFiltrados = productos.filter((p) => {
     const cumpleCategoria = categoriaSel === "Todos" || p.categoria === categoriaSel;
     const cumpleGenero =
