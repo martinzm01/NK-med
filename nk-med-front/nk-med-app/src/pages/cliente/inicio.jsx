@@ -261,7 +261,7 @@ export default function Inicio() {
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
-                  <h4 className="text-white text-xl px-2 p-1 bg-white/20 uppercase">Mujer</h4>
+                  <h4 className="text-white text-xl px-2 bg-white/20 uppercase">Mujer</h4>
                 </div>
                 </div>
               </Link>
@@ -272,7 +272,7 @@ export default function Inicio() {
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
-                  <h4 className="text-white text-xl p-1 px-2 bg-white/20 uppercase">Hombre</h4>
+                  <h4 className="text-white text-xl  px-2 bg-white/20 uppercase">Hombre</h4>
                   </div>
                 </div>
               </Link>
@@ -283,7 +283,7 @@ export default function Inicio() {
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80  to-transparent ">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
-                  <h4 className="text-white text-xl uppercase bg-white/20 px-2 p-1 ">Unisex</h4>
+                  <h4 className="text-white text-xl uppercase bg-white/20 px-2  ">Unisex</h4>
                   </div>
                 </div>
               </Link>
