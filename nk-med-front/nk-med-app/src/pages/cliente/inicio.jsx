@@ -7,20 +7,20 @@ import Footer from "../../components/footer";
 // 1. DATOS DEL CARRUSEL SECCIÓN 3
 const slidesS3 = [
   {
-    titulo: "Estilo y",
-    subtitulo: "Elegancia",
+    titulo: "Ambos",
+    subtitulo: "Estilo y elegancia",
     frase: "Práctico, duradero y repelente a líquidos.",
     img1: "assets/c2.jpg",
-    img2: "assets/c6.jpg",
-    bgCol: "bg-[#CEE3E8]", 
-    tituloCol: "text-teal-900/60",
-    textoCol: "text-black",
-    btnCol: "border-black/40 text-black hover:bg-black hover:text-white",
+    img2: "assets/c2.jpg",
+    bgCol: "bg-[#3F5F64]", 
+    tituloCol: "text-white",
+    textoCol: "text-white/80",
+    btnCol: "border-white/40 text-white hover:bg-black hover:text-white",
     flechasCol: "text-black"
   },
   {
-    titulo: "Corte y",
-    subtitulo: "Confort",
+    titulo: "Pantalones",
+    subtitulo: "",
     frase: "Diseños ergonómicos pensados para la movilidad total en entornos exigentes.",
     img1: "assets/c4.jpg",
     img2: "assets/pv.jpg",
@@ -177,41 +177,123 @@ export default function Inicio() {
         </section>
 
         {/* SECCIÓN 3: CARRUSEL */}
-        <section className="relative min-h-screen flex items-center bg-white border-t border-slate-100 overflow-hidden">
-          <div className="w-full grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-            <div className="relative grid grid-cols-2 bg-white h-[400px] lg:h-auto order-2 lg:order-1">
-              <div className="relative"><img src={slidesS3[indiceS3].img1} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700" /></div>
-              <div className="relative"><img src={slidesS3[indiceS3].img2} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700" /></div>
-              <button onClick={() => openModal('seccion3')} className="absolute left-1/2 lg:left-auto lg:-right-6 top-1/2 -translate-x-1/2 lg:translate-x-0 -translate-y-1/2 bg-[#2D3A30] text-white w-12 h-12 flex items-center justify-center shadow-xl z-20 hover:bg-teal-900 transition-all">
-                <Plus className="w-6 h-6" />
+        <section className="relative bg-white border-t border-slate-100 overflow-hidden">
+          {/* Eliminamos min-h-screen en móvil para que no sobre espacio abajo, lo dejamos en lg */}
+          <div className="w-full grid grid-cols-2 lg:grid-cols-2 lg:min-h-screen">
+            
+            {/* Contenedor de Imágenes - Altura fija en móvil para consistencia */}
+            <div className="relative grid grid-cols-1 lg:grid-cols-2 bg-white h-[450px] md:h-[600px] lg:h-auto order-1">
+              <div className="relative">
+                <img 
+                  src={slidesS3[indiceS3].img1} 
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700" 
+                  alt="Producto"
+                />
+              </div>
+              <div className="relative hidden lg:block">
+                <img 
+                  src={slidesS3[indiceS3].img2} 
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700" 
+                  alt="Producto detalle"
+                />
+              </div>
+              
+              {/* Botón Plus centrado respecto a la imagen */}
+              <button 
+                onClick={() => openModal('seccion3')} 
+                className="absolute right-0 lg:left-auto lg:-right-6  top-1/2 cursor-pointer lg:translate-x-0 -translate-y-1/2 bg-[#2D3A30] text-white w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center shadow-xl z-20 hover:bg-teal-900 transition-all"
+              >
+                <Plus className="w-5 h-5 lg:w-6 lg:h-6" />
               </button>
             </div>
 
-            <div className={`relative ${slidesS3[indiceS3].bgCol} flex items-center justify-center px-8 lg:px-20 py-20 lg:py-24 order-1 lg:order-2 transition-colors duration-700`}>
+            {/* Contenedor de Texto - Centrado verticalmente respecto a la imagen */}
+            <div className={`relative ${slidesS3[indiceS3].bgCol} flex items-center justify-center px-4 lg:px-20 py-10 lg:py-24 order-2 transition-colors duration-700`}>
               <div className="max-w-lg text-center lg:text-left">
-                <h2 className={`text-5xl lg:text-7xl font-light ${slidesS3[indiceS3].tituloCol} mb-8 leading-tight uppercase`}>
-                  {slidesS3[indiceS3].titulo} <br /><span className="italic">{slidesS3[indiceS3].subtitulo}</span>
+                <h2 className={`text-xl md:text-4xl lg:text-7xl font-light ${slidesS3[indiceS3].tituloCol} mb-4 lg:mb-8 leading-tight uppercase`}>
+                  {slidesS3[indiceS3].titulo} <br />
+                  <span className="italic text-lg md:text-2xl lg:text-4xl">{slidesS3[indiceS3].subtitulo}</span>
                 </h2>
-                <p className={`${slidesS3[indiceS3].textoCol} text-base lg:text-lg leading-relaxed mb-10 font-light italic`}>
+                <p className={`${slidesS3[indiceS3].textoCol} text-[10px] md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-10 font-light italic`}>
                   {slidesS3[indiceS3].frase}
                 </p>
-                <Link to="/catalogo" className={`border ${slidesS3[indiceS3].btnCol} px-10 py-4 transition-all duration-300 text-sm uppercase tracking-widest font-light inline-block`}>
+                <Link 
+                  to="/catalogo?categoria=Ambos" 
+                  className={`border ${slidesS3[indiceS3].btnCol} px-4 lg:px-10 py-2.5 lg:py-4 bg-white/15 transition-all duration-300 text-[9px] lg:text-sm uppercase tracking-widest font-light inline-block`}
+                >
                   Ver más
                 </Link>
               </div>
             </div>
           </div>
           
-          <button onClick={anteriorS3} className={`absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 ${slidesS3[indiceS3].flechasCol} transition-all z-20`}>
-            <ChevronLeft className="w-10 h-10" />
+          {/* Flechas de navegación - Ahora usan top-1/2 del contenedor total, que al tener la misma altura que la imagen en móvil, quedarán centradas */}
+          <button 
+            onClick={anteriorS3} 
+            className={`absolute left-2 cursor-pointer lg:left-8 top-1/2 -translate-y-1/2 ${slidesS3[indiceS3].flechasCol} transition-all z-20`}
+          >
+            <ChevronLeft className="w-8 h-8 lg:w-12 lg:h-12" />
           </button>
-          <button onClick={proximoS3} className={`absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 ${slidesS3[indiceS3].flechasCol} transition-all z-20`}>
-            <ChevronRight className="w-10 h-10" />
+          <button 
+            onClick={proximoS3} 
+            className={`absolute right-2 lg:right-8 cursor-pointer top-1/2 -translate-y-1/2 ${slidesS3[indiceS3].flechasCol} transition-all z-20`}
+          >
+            <ChevronRight className="w-8 h-8 lg:w-12 lg:h-12" />
           </button>
         </section>
+
+        {/* --- SECCIÓN 4: GÉNEROS (MUJER, HOMBRE, UNISEX) --- */}
+        <section className="pt-10 pb-20 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between  mb-12 gap-4">
+              <div>
+                <span className="text-teal-600 text-s mt-3 font-bold uppercase tracking-widest">Colecciones</span>
+              </div>
+              <p className="text-slate-500 font-light italic text-sm max-w-xs text-left">
+                Diseños adaptados a cada necesidad y fisionomía profesional.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Mujer */}
+              <Link to="/catalogo?genero=Mujer" className="relative h-[400px] group overflow-hidden">
+                <img src="assets/c4.jpg" alt="Mujer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
+                  <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
+                  <div className=" flex">
+                  <h4 className="text-white text-xl px-2 p-1 bg-white/20 uppercase">Mujer</h4>
+                </div>
+                </div>
+              </Link>
+
+              {/* Hombre */}
+              <Link to="/catalogo?genero=Hombre" className="relative h-[400px] group overflow-hidden">
+                <img src="assets/pv.jpg" alt="Hombre" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
+                  <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
+                  <div className=" flex">
+                  <h4 className="text-white text-xl p-1 px-2 bg-white/20 uppercase">Hombre</h4>
+                  </div>
+                </div>
+              </Link>
+
+              {/* Unisex */}
+              <Link to="/catalogo?genero=unisex" className="relative h-[400px] group overflow-hidden">
+                <img src="assets/c2.jpg" alt="Unisex" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80  to-transparent ">
+                  <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
+                  <div className=" flex">
+                  <h4 className="text-white text-xl uppercase bg-white/20 px-2 p-1 ">Unisex</h4>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
+      
+      
       </main>
       <Footer/>
-
       <ProductModal isOpen={modalOpen} onClose={() => setModalOpen(false)} data={modalData} />
     </div>
   );
