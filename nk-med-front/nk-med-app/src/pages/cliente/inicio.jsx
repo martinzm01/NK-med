@@ -16,7 +16,8 @@ const slidesS3 = [
     tituloCol: "text-white",
     textoCol: "text-white/80",
     btnCol: "border-white/40 text-white hover:bg-black hover:text-white",
-    flechasCol: "text-black"
+    flechasCol: "text-black",
+    link: "/catalogo?categoria=Ambos" // <--- Agregado
   },
   {
     titulo: "Pantalones",
@@ -28,7 +29,8 @@ const slidesS3 = [
     tituloCol: "text-white",
     textoCol: "text-white/80",
     btnCol: "border-white/40 text-white hover:bg-white hover:text-teal-950",
-    flechasCol: "text-white/50 hover:text-white"
+    flechasCol: "text-white/50 hover:text-white",
+    link: "/catalogo?categoria=Pantalones" // <--- Agregado
   }
 ];
 
@@ -212,13 +214,13 @@ export default function Inicio() {
               <div className="max-w-lg text-center lg:text-left">
                 <h2 className={`text-xl md:text-4xl lg:text-7xl font-light ${slidesS3[indiceS3].tituloCol} mb-4 lg:mb-8 leading-tight uppercase`}>
                   {slidesS3[indiceS3].titulo} <br />
-                  <span className="italic text-lg md:text-2xl lg:text-4xl">{slidesS3[indiceS3].subtitulo}</span>
+                  <span className="italic text-lg md:text-lg lg:text-3xl">{slidesS3[indiceS3].subtitulo}</span>
                 </h2>
                 <p className={`${slidesS3[indiceS3].textoCol} text-[10px] md:text-base lg:text-lg leading-relaxed mb-6 lg:mb-10 font-light italic`}>
                   {slidesS3[indiceS3].frase}
                 </p>
                 <Link 
-                  to="/catalogo?categoria=Ambos" 
+                  to={slidesS3[indiceS3].link} 
                   className={`border ${slidesS3[indiceS3].btnCol} px-4 lg:px-10 py-2.5 lg:py-4 bg-white/15 transition-all duration-300 text-[9px] lg:text-sm uppercase tracking-widest font-light inline-block`}
                 >
                   Ver más
