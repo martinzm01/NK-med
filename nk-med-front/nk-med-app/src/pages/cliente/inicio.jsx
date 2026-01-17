@@ -257,7 +257,7 @@ export default function Inicio() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Mujer */}
               <Link to="/catalogo?genero=Mujer" className="relative h-[400px] group overflow-hidden">
-                <img src="assets/c4.jpg" alt="Mujer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <img src="assets/c4.jpg" alt="Mujer" className="w-full h-full object-cover grayscale-0 lg:grayscale group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
@@ -268,7 +268,7 @@ export default function Inicio() {
 
               {/* Hombre */}
               <Link to="/catalogo?genero=Hombre" className="relative h-[400px] group overflow-hidden">
-                <img src="assets/pv.jpg" alt="Hombre" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <img src="assets/pv.jpg" alt="Hombre" className="w-full h-full object-cover grayscale-0 lg:grayscale  group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
@@ -279,7 +279,7 @@ export default function Inicio() {
 
               {/* Unisex */}
               <Link to="/catalogo?genero=unisex" className="relative h-[400px] group overflow-hidden">
-                <img src="assets/c2.jpg" alt="Unisex" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <img src="assets/c2.jpg" alt="Unisex" className="w-full h-full object-cover grayscale-0 lg:grayscale  group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80  to-transparent ">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
