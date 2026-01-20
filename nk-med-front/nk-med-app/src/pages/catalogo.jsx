@@ -227,7 +227,7 @@ useEffect(() => {
 
           {/* Grid de productos */}
           <main>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-12 lg:grid-cols-4">
+            <div className="grid grid-cols-2 max-w-6xl mx-auto gap-x-6 gap-y-8 md:gap-x-8 md:gap-y-12 lg:grid-cols-4">
               {productosFiltrados.map((producto) => (
                 <TarjetaProducto key={producto.id} {...producto} />
               ))}
