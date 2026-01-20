@@ -95,7 +95,16 @@ export default function Inicio() {
   const [indiceS3, setIndiceS3] = useState(0);
   const [indice, setIndice] = useState(0);
 
-  const imagenes = ["assets/fondoInicio.png", "assets/2.png", "assets/1.png"];
+
+// Imágenes para PC (Horizontales)
+  const imagenesPC = ["assets/fondoInicio.png", "assets/2.png", "assets/1.png"];
+  
+  // Imágenes para Móvil (Verticales / Proporción de teléfono)
+  const imagenesMovil = ["assets/fondoInicio.png", "assets/fondomovil2.jpg", "assets/fondomovil3.jpg"];
+
+  // Estado para saber qué imágenes usar
+  const [imagenesActuales, setImagenesActuales] = useState(imagenesPC);
+
 
   const detallesSecciones = {
     seccion2: {
@@ -112,12 +121,30 @@ export default function Inicio() {
     }
   };
 
-  useEffect(() => {
-    const intervalo = setInterval(() => {
-      setIndice((prev) => (prev === imagenes.length - 1 ? 0 : prev + 1));
-    }, 5000);
-    return () => clearInterval(intervalo);
-  }, [imagenes.length]);
+useEffect(() => {
+  const manejarResizing = () => {
+    if (window.innerWidth < 1024) { // 1024px es el estándar de 'lg' en Tailwind
+      setImagenesActuales(imagenesMovil);
+    } else {
+      setImagenesActuales(imagenesPC);
+    }
+  };
+
+  // Ejecutar al cargar la página
+  manejarResizing();
+
+  // Escuchar cambios de tamaño
+  window.addEventListener("resize", manejarResizing);
+  return () => window.removeEventListener("resize", manejarResizing);
+}, []);
+
+useEffect(() => {
+  const intervalo = setInterval(() => {
+    // CORRECCIÓN: Usar imagenesActuales en lugar de imagenes
+    setIndice((prev) => (prev === imagenesActuales.length - 1 ? 0 : prev + 1));
+  }, 5000);
+  return () => clearInterval(intervalo);
+}, [imagenesActuales.length]); // Dependencia corregida
 
   const openModal = (key) => {
     setModalData(detallesSecciones[key]);
@@ -130,32 +157,27 @@ export default function Inicio() {
   return (
     <div className="bg-black">
 
-      
-{/* --- SECCIÓN 1: DISEÑO ORIGINAL EN LAPTOP / CENTRADO EN MÓVIL --- */}
+{/* --- SECCIÓN 1: DISEÑO ORIGINAL --- */}
 <div 
-  className="lg:mt-20 py-10 min-h-screen relative bg-cover bg-center w-full transition-all duration-1000 ease-in-out flex items-center lg:items-start justify-center" 
-  style={{ backgroundImage: `url('${imagenes[indice]}')` }}
+  className="lg:mt-20 py-10 min-h-screen relative bg-cover bg-center bg-no-repeat w-full transition-all duration-1000 ease-in-out flex items-center lg:items-start justify-center" 
+  style={{ 
+    backgroundImage: `url('${imagenesActuales[indice]}')`,
+    backgroundPosition: 'center center' 
+  }}
 >
   <div className="absolute inset-0 bg-black/20"></div>
   
-  {/* 1. En móviles es 'relative' (para centrarse por el flex del padre).
-      2. En laptops (lg:) vuelve a ser 'relative w-full' con el padding-top original.
-  */}
   <div className="relative w-full text-center flex items-center justify-center px-6 lg:pt-5">
-    
-    {/* 1. En móviles quitamos 'sm:mt-10' y dejamos que el flex lo centre.
-        2. En laptops 'lg:mt-30' recupera su posición original.
-    */}
-    <div className="w-md justify-center lg:mt-30 px-6 py-10 bg-white/40">
-      <h1 className="font font-bold text-5xl lg:mb-3 text-white drop-shadow-lg">NK MED</h1>
-      <h1 className="font-serif font-light text-5xl mb-8 text-white drop-shadow-lg">AMBOS CLÍNICOS</h1>
+    <div className="w-[95%] lg:w-md justify-center lg:mt-30 px-4 py-10 lg:px-6 bg-white/40">
+      <h1 className="font font-bold text-4xl lg:text-5xl lg:mb-3 text-white drop-shadow-lg">NK MED</h1>
+      <h1 className="font-serif font-light text-4xl lg:text-5xl mb-8 text-white drop-shadow-lg">AMBOS CLÍNICOS</h1>
+      
       <Link to="/catalogo" className="bg-[#2D4448] font-serif hover:bg-[#0C1512] inline-block text-white px-10 py-3 font-light tracking-widest text-sm uppercase">
         Ver catálogo
       </Link>
     </div>
   </div>
 </div>
-
       <main className="min-h-screen font-serif bg-white">
         
         {/* SECCIÓN 2 */}
@@ -259,7 +281,7 @@ export default function Inicio() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Mujer */}
               <Link to="/catalogo?genero=Mujer" className="relative h-[400px] group overflow-hidden">
-                <img src="assets/c4.jpg" alt="Mujer" className="w-full h-full object-cover grayscale-0 lg:grayscale group-hover:grayscale-0 transition-all duration-700" />
+                <img src="assets/c2.jpg" alt="Mujer" className="w-full h-full object-cover grayscale-0 lg:grayscale group-hover:grayscale-0 hover:scale-103 transition-all duration-700" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
@@ -270,7 +292,7 @@ export default function Inicio() {
 
               {/* Hombre */}
               <Link to="/catalogo?genero=Hombre" className="relative h-[400px] group overflow-hidden">
-                <img src="assets/pv.jpg" alt="Hombre" className="w-full h-full object-cover grayscale-0 lg:grayscale  group-hover:grayscale-0 transition-all duration-700" />
+                <img src="assets/c4.jpg" alt="Hombre" className="w-full h-full object-cover grayscale-0 lg:grayscale  hover:scale-103 group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
@@ -281,7 +303,7 @@ export default function Inicio() {
 
               {/* Unisex */}
               <Link to="/catalogo?genero=unisex" className="relative h-[400px] group overflow-hidden">
-                <img src="assets/c2.jpg" alt="Unisex" className="w-full h-full object-cover grayscale-0 lg:grayscale  group-hover:grayscale-0 transition-all duration-700" />
+                <img src="assets/rev2.jpg" alt="Unisex" className="w-full h-full object-cover grayscale-0 lg:grayscale hover:scale-103  group-hover:grayscale-0 transition-all duration-700" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80  to-transparent ">
                   <span className="text-white uppercase tracking-widest text-sm font-light">Colección</span>
                   <div className=" flex">
