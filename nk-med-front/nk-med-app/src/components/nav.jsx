@@ -43,6 +43,7 @@ export default function Navbar() {
   const navLinks = [
     { href: "/inicio", label: "Inicio |" },
     { href: "/catalogo", label: "Catálogo |" },
+    { href: "/contacto", label: "Contacto |" },
   ];
 
   if (role === 'admin') {
@@ -78,14 +79,20 @@ export default function Navbar() {
           </Link>
 
           {/* Navegación Desktop */}
-          {/* Agregué un condicional simple para que el texto sea negro en páginas blancas */}
           <div className={`hidden items-center gap-10 md:flex ${isHomePage ? "text-white" : "text-black"}`}>
             {navLinks.map((link) => (
-              <Link key={link.href} to={link.href} className={isHomePage ? desktopLinkClasses : desktopLinkClasses.replace("text-white", "text-black hover:text-black/70")}>
+              <Link 
+                key={link.href} 
+                to={link.href} 
+                className={`font-sans text-md font-normal tracking-wide transition-colors ${
+                  isHomePage 
+                    ? "text-white hover:text-gray-300" // Hover gris claro sobre fondo negro
+                    : "text-black hover:text-gray-500" // Hover gris oscuro sobre fondo blanco
+                }`}
+              >
                 {link.label}
               </Link>
             ))}
-
             {user ? (
               <button 
                 onClick={handleLogout}
@@ -126,15 +133,19 @@ export default function Navbar() {
         <div className={`${isHomePage ? "bg-black" : "bg-white"} backdrop-blur-xl md:hidden border-t border-white/10 animate-in fade-in slide-in-from-top-2`}>
           <div className="space-y-1 px-6 pb-6 pt-4">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={isHomePage ? mobileLinkClasses : mobileLinkClasses.replace("text-white", "text-black")}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+            <Link
+              key={link.href}
+              to={link.href}
+              className={`block py-3 font-sans text-base font-medium transition-colors ${
+                isHomePage 
+                  ? "text-white hover:text-white/70" 
+                  : "text-black hover:text-black/60" // Gris en móvil sobre fondo blanco
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
             
             <div className={`pt-4 border-t ${isHomePage ? "border-white/10" : "border-black/10"}`}>
               {user ? (

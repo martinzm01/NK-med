@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 // Agregamos 'genero' a las desestructuración de props
 export default function TarjetaProducto({ id, nombre, precio, color, imagen, genero }) {
   return (
-    <div className="group relative">
+    <div className="group relative lg:mx-2 ">
       {/* Contenedor de Imagen con position relative para ubicar la etiqueta */}
       <div className="relative overflow-hidden rounded-md bg-white">
         <img
           src={imagen}
           alt={nombre}
-          className="lg:aspect-auto aspect-auto w-full object-cover group-hover:opacity-75 lg:h-80 transition-opacity duration-300"
+          className="lg:aspect-auto aspect-auto w-full object-cover group-hover:opacity-75 lg:h-90 transition-opacity duration-300"
         />
         
         {/* Etiqueta de Género - Posicionada exactamente como en el detalle */}
