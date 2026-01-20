@@ -1,36 +1,35 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; 
-import { Menu, X, LogOut, User, LogIn } from "lucide-react"; 
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Importamos useLocation
+import { Menu, X, LogOut, LogIn } from "lucide-react"; 
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const { user, role, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Hook para detectar la ruta
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  
-  // --- NUEVOS ESTADOS PARA EL SMART NAV ---
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  const desktopLinkClasses = "font-sans text-md  font-normal tracking-wide text-black transition-colors hover:text-black";
-  const mobileLinkClasses = "block py-3 font-sans text-base font-medium text-black transition-colors hover:text-gray-300";
+  // --- LÓGICA DINÁMICA ---
+  // Se considera "Inicio" si la ruta es exactamente "/" o "/inicio"
+  const isHomePage = location.pathname === "/" || location.pathname === "/inicio" || location.pathname === "/login";
+
+  const desktopLinkClasses = "font-sans text-md font-normal tracking-wide text-white transition-colors hover:text-white";
+  const mobileLinkClasses = "block py-3 font-sans text-base font-medium text-white transition-colors hover:text-white/80";
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // 1. Lógica de transparencia (tu código original)
       setIsScrolled(currentScrollY > 20);
 
-      // 2. Lógica de ocultamiento (Smart Nav)
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scroll hacia abajo: ocultar
         setIsVisible(false);
-        setIsMenuOpen(false); // Cerramos el menú móvil si estaba abierto
+        setIsMenuOpen(false); 
       } else {
-        // Scroll hacia arriba: mostrar
         setIsVisible(true);
       }
 
@@ -39,7 +38,7 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]); // Dependencia del último scroll
+  }, [lastScrollY]);
 
   const navLinks = [
     { href: "/inicio", label: "Inicio |" },
@@ -58,33 +57,31 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out border-b border-black/20 ${
-        // Lógica de movimiento arriba/abajo
         isVisible ? "translate-y-0" : "-translate-y-full"
       } ${
-        // Lógica de color y sombra (isScrolled)
+        // Si es Home -> Negro. Si es otra página -> Blanco.
         isScrolled
-          ? "bg-white backdrop-blur-md shadow-md py-1"
-          : "bg-white lg:py-3 py-2"
+          ? `${isHomePage ? "bg-black/95" : "bg-white/95"} backdrop-blur-md shadow-md py-1`
+          : `${isHomePage ? "bg-black" : "bg-white"} lg:py-3 py-2`
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="flex h-16 lg:h-18 items-center justify-between">
           
-          {/* LOGO */}
+          {/* LOGO con filtro para que se vea negro en páginas blancas */}
           <Link to="/" className="flex items-center">
             <img 
-              src="/assets/logo1blanco.png" 
+              src={isHomePage ? "/assets/iconologo.png" : "/assets/logo1blanco.png"} 
               alt="Logo" 
-              className={"h-auto w-25 lg:w-30 pt-2 object-contain" 
-              
-              }
-                />
+              className={isHomePage ? `h-auto w-24 lg:w-30 mt-5 object-contain transition-all` : `h-auto w-24 lg:w-30 mt-2 object-contain transition-all`} 
+            />
           </Link>
 
           {/* Navegación Desktop */}
-          <div className="hidden items-center text-black gap-10 md:flex">
+          {/* Agregué un condicional simple para que el texto sea negro en páginas blancas */}
+          <div className={`hidden items-center gap-10 md:flex ${isHomePage ? "text-white" : "text-black"}`}>
             {navLinks.map((link) => (
-              <Link key={link.href} to={link.href} className={desktopLinkClasses}>
+              <Link key={link.href} to={link.href} className={isHomePage ? desktopLinkClasses : desktopLinkClasses.replace("text-white", "text-black hover:text-black/70")}>
                 {link.label}
               </Link>
             ))}
@@ -92,24 +89,32 @@ export default function Navbar() {
             {user ? (
               <button 
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-normal text-black cursor-pointer border border-gray-100 rounded-lg hover:bg-black hover:text-white transition-all"
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-normal cursor-pointer border rounded-lg transition-all ${
+                  isHomePage 
+                  ? "text-white border-white/40 hover:bg-white hover:text-black" 
+                  : "text-black border-black/15 hover:bg-black hover:text-white"
+                }`}
               >
                 <LogOut size={16} /> Salir
               </button>
             ) : (
               <Link 
                 to="/login" 
-                className="px-4 py-2 text-sm gap-2 font-normal flex text-black  rounded-lg hover:bg-black hover:text-white transition-all"
+                className={`px-4 py-2 text-sm gap-2 font-normal flex border rounded-lg transition-all ${
+                  isHomePage 
+                  ? "text-white border-white/40 hover:bg-white hover:text-black" 
+                  : "text-black border-black/15 hover:bg-black hover:text-white"
+                }`}
               >
                 <LogIn size={16} />Ingresar
               </Link>
             )}
           </div>
 
-          {/* Botón menú móvil */}
+          {/* Botón menú móvil adaptativo */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-black md:hidden p-2"
+            className={`${isHomePage ? "text-white" : "text-black"} md:hidden p-2`}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -118,31 +123,31 @@ export default function Navbar() {
 
       {/* Menú móvil desplegable */}
       {isMenuOpen && (
-        <div className="bg-white backdrop-blur-xl md:hidden text-black border-t border-white/10 animate-in fade-in slide-in-from-top-2">
+        <div className={`${isHomePage ? "bg-black" : "bg-white"} backdrop-blur-xl md:hidden border-t border-white/10 animate-in fade-in slide-in-from-top-2`}>
           <div className="space-y-1 px-6 pb-6 pt-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className={mobileLinkClasses}
+                className={isHomePage ? mobileLinkClasses : mobileLinkClasses.replace("text-white", "text-black")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
             
-            <div className="pt-4 border-t border-white/10">
+            <div className={`pt-4 border-t ${isHomePage ? "border-white/10" : "border-black/10"}`}>
               {user ? (
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left py-3 font-sans text-base font-medium text-red-400 flex items-center gap-2"
+                  className="w-full text-left py-3 font-sans text-base font-medium text-red-500 flex items-center gap-2"
                 >
                   <LogOut size={18} /> Cerrar Sesión
                 </button>
               ) : (
                 <Link
                   to="/login"
-                  className="block py-3 font-sans text-base font-medium text-black"
+                  className={`block py-3 font-sans text-base font-medium ${isHomePage ? "text-white" : "text-black"}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Iniciar Sesión
