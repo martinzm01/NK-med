@@ -3,8 +3,7 @@ import { supabase } from "../lib/supabase";
 import TarjetaProducto from "../components/cardSimple";
 import Footer from "../components/footer";
 import { Filter, X } from "lucide-react"; 
-import { useSearchParams } from "react-router-dom";
-
+import { useSearchParams } from "react-router-dom"; // <--- AGREGAR ESTO
 const CATEGORIAS = ["Ambos", "Chaquetas", "Pantalones"];
 const GENEROS = ["Hombre", "Mujer"];
 
@@ -14,7 +13,6 @@ export default function CatalogoProductos() {
   const [categoriaSel, setCategoriaSel] = useState("Todos");
   const [generoSel, setGeneroSel] = useState("Todos");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     async function fetchProductos() {
@@ -42,16 +40,6 @@ export default function CatalogoProductos() {
     fetchProductos();
   }, []);
 
-
-useEffect(() => {
-    const catQuery = searchParams.get("categoria");
-    const genQuery = searchParams.get("genero");
-
-    if (catQuery) setCategoriaSel(catQuery);
-    if (genQuery) setGeneroSel(genQuery);
-  }, [searchParams]);
-
-  
   const productosFiltrados = productos.filter((p) => {
     const cumpleCategoria = categoriaSel === "Todos" || p.categoria === categoriaSel;
     const cumpleGenero =
@@ -199,7 +187,7 @@ useEffect(() => {
         <div className="w-full max-w-[1400px] px-10 md:px-20">
           
           {/* FILTROS PC: TAL CUAL ESTABAN */}
-          <div className="hidden md:block border-b border-gray-100 mt-12 md:mt-23 pb-6 md:pb-6">
+          <div className="hidden md:block border-b border-gray-100 mt-12 ml-9 md:mt-23 pb-6 md:pb-6">
              <FiltrosUX />
           </div>
 
@@ -227,7 +215,7 @@ useEffect(() => {
 
           {/* Grid de productos */}
           <main>
-            <div className="grid grid-cols-2 max-w-6xl mx-auto gap-x-6 gap-y-8 md:gap-x-8 md:gap-y-12 lg:grid-cols-4">
+            <div className="grid grid-cols-2 max-w-6xl mx-auto  gap-x-6 gap-y-8 md:gap-x-8 md:gap-y-12 lg:grid-cols-4">
               {productosFiltrados.map((producto) => (
                 <TarjetaProducto key={producto.id} {...producto} />
               ))}
