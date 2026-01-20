@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import Navbar from './components/nav'
 import PanelCatalogo from './pages/adminCatalogo'
+import Contacto from './pages/contacto'
 export default function AppRoutes() {  
   return (
     <AuthProvider> {/* Envolvemos todo para tener acceso al usuario y rol */}
@@ -20,7 +21,7 @@ export default function AppRoutes() {
           <Route path="/catalogo" element={<CatalogoProductos/>} />
           <Route path="/producto/:id" element={<DetalleProducto />} />
           <Route path="/login" element={<Login />} />
-
+          <Route path="/contacto" element={<Contacto/>} />          
           {/* --- RUTAS DE ADMINISTRADOR (Solo rol 'admin') --- */}
           <Route 
             path="/panelOperador" 
