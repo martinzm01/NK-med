@@ -28,6 +28,23 @@ const DetalleProducto = () => {
     if (id) fetchProductoDetalle();
   }, [id]);
 
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (!modalAbierto) return;
+    if (e.key === "ArrowRight") nextImage();
+    if (e.key === "ArrowLeft") prevImage();
+    if (e.key === "Escape") setModalAbierto(false);
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [modalAbierto, imagenActiva]); // Importante pasar estas dependencias
+  // FORMATEADOR DE PRECIO ARGENTINO
+  const precioFormateado = producto ? new Intl.NumberFormat('es-AR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(producto.precio) : "";
+  
   const listaImagenes = producto?.imagenes && producto.imagenes.length > 0 
     ? producto.imagenes 
     : ["/assets/placeholder.jpg"];
@@ -49,7 +66,30 @@ const DetalleProducto = () => {
     ? `Me interesa el producto ${producto?.nombre} en talle ${talleSeleccionado}`
     : `Me interesa el producto ${producto?.nombre}`;
 
-  if (loading) return (
+const [touchStart, setTouchStart] = useState(null);
+const [touchEnd, setTouchEnd] = useState(null);
+
+// Distancia mínima para considerar que es un deslizamiento (en píxeles)
+const minSwipeDistance = 50;
+
+const onTouchStart = (e) => {
+  setTouchEnd(null);
+  setTouchStart(e.targetTouches[0].clientX);
+};
+
+const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+const onTouchEnd = () => {
+  if (!touchStart || !touchEnd) return;
+  const distance = touchStart - touchEnd;
+  const isLeftSwipe = distance > minSwipeDistance;
+  const isRightSwipe = distance < -minSwipeDistance;
+
+  if (isLeftSwipe) nextImage();
+  if (isRightSwipe) prevImage();
+};
+
+    if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">
       <Loader2 className="w-8 h-8 animate-spin text-teal-600 mb-4" />
       <p className="text-xs uppercase tracking-[0.3em] text-gray-500">Cargando detalles...</p>
@@ -61,18 +101,62 @@ const DetalleProducto = () => {
   return (
     <div className="min-h-screen bg-white">
       
-      {/* MODAL DE IMAGEN COMPLETA */}
-      {modalAbierto && (
-        <div 
-          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4"
-          onClick={() => setModalAbierto(false)}
-        >
-          <button className="absolute top-6 right-6 text-white/70 hover:text-white" onClick={() => setModalAbierto(false)}>
-            <X className="w-8 h-8" />
-          </button>
-          <img src={listaImagenes[imagenActiva]} alt="" className="max-w-full max-h-[90vh] object-contain" onClick={(e) => e.stopPropagation()} />
+    {/* MODAL DE IMAGEN COMPLETA CON SWIPE Y FLECHAS */}
+    {modalAbierto && (
+      <div 
+        className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4"
+        onClick={() => setModalAbierto(false)}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Botón Cerrar */}
+        <button className="absolute top-6 right-6 text-white/70 hover:text-white z-[110]" onClick={() => setModalAbierto(false)}>
+          <X className="w-8 h-8" />
+        </button>
+
+        <div className="relative w-full max-w-5xl flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          
+          {/* Flechas (Ocultas en móviles para priorizar el gesto, visibles en desktop) */}
+          {listaImagenes.length > 1 && (
+            <>
+              <button 
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                className="hidden md:flex absolute -left-12 lg:-left-20 p-3 text-white/50 hover:text-white transition-all"
+              >
+                <ChevronLeft className="w-12 h-12" />
+              </button>
+
+              <button 
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                className="hidden md:flex absolute -right-12 lg:-right-20 p-3 text-white/50 hover:text-white transition-all"
+              >
+                <ChevronRight className="w-12 h-12" />
+              </button>
+            </>
+          )}
+
+          {/* Imagen Grande */}
+          <div className="relative">
+            <img 
+              src={listaImagenes[imagenActiva]} 
+              alt="" 
+              className="max-w-full max-h-[85vh] object-contain select-none animate-in fade-in duration-300" 
+            />
+            
+            {/* Indicador de imágenes para móvil */}
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+              {listaImagenes.map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === imagenActiva ? 'w-6 bg-teal-500' : 'w-1.5 bg-white/20'}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      )}
+      </div>
+    )}
 
       <nav className="hidden md:flex max-w-7xl mx-auto px-6 pt-20 lg:pt-28 items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-400">
         <Link to="/catalogo" className="hover:text-black">Catálogo</Link>
@@ -151,8 +235,8 @@ const DetalleProducto = () => {
             <span className="text-teal-600 text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold mb-2 block">Especificaciones</span>
             <h1 className="text-2xl md:text-3xl lg:text-5xl text-teal-950 mb-2 uppercase tracking-tighter leading-tight font-serif">{producto.nombre}</h1>
             <p className="text-sm md:text-base text-black font-sans font-light italic">Color: {producto.color || "No especificado"}</p>
-            <p className="text-xl md:text-2xl font-sans font-bold text-teal-950 mt-2">${producto.precio}</p>
-          </div>
+            <p className="text-xl md:text-2xl font-sans font-semibold text-teal-950 mt-2">${precioFormateado}</p>
+            </div>
           <div className="bg-teal-50/30 p-4 rounded-sm border-l-4 border-teal-600 mb-6 font-light italic text-sm md:text-base text-slate-600">
             "{producto.descripcion || "Diseño ergonómico pensado para la máxima movilidad profesional."}"
           </div>

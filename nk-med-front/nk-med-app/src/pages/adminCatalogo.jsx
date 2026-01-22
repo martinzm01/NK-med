@@ -332,14 +332,26 @@ const handleFileChange = (e) => {
                   <th className="hidden sm:table-cell p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Género</th>
                   <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Precio</th>
                   <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">Stock</th>
-                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 ">Acciones</th>
+                  <th className="p-4 text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400  ">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {filteredProducts.map((p) => (
                   <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="p-4">
-                      <img src={p.imagenes?.[0]} alt="" className="w-10 h-10 md:w-12 md:h-12 object-cover rounded-sm border border-gray-100" />
+                      {/* Envolvemos la imagen en un botón para que abra el modal */}
+                      <button 
+                        onClick={() => handleEdit(p)}
+                        className="relative group/img overflow-hidden rounded-sm border border-gray-100 block cursor-pointer"
+                      >
+                        <img 
+                          src={p.imagenes?.[0]} 
+                          alt={p.nombre} 
+                          className="w-10 h-10 md:w-12 md:h-12 object-cover group-hover/img:scale-110 transition-transform duration-300" 
+                        />
+                        {/* Un overlay sutil al pasar el mouse para indicar acción */}
+                        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover/img:opacity-100 transition-opacity" />
+                      </button>
                     </td>
                     <td className="p-4">
                       <div className="text-xs font-medium uppercase tracking-wider">{p.nombre}</div>
@@ -354,12 +366,12 @@ const handleFileChange = (e) => {
                     }).format(p.precio)}
                   </td>
                     <td className="p-4 text-xs  text-teal-900">{p.stock}</td>
-                    <td className="p-4">
-                      <div className="flex  gap-3">
-                        <button onClick={() => handleEdit(p)} className="text-gray-400 hover:text-black transition-all">
+                    <td className="p-4 ">
+                      <div className="flex  gap-4">
+                        <button onClick={() => handleEdit(p)} className="text-black cursor-pointer  p-1 rounded-sm hover:bg-gray-100 transition-all">
                           <Edit size={16} />
                         </button>
-                        <button onClick={() => handleDelete(p.id)} className="text-gray-400 hover:text-red-600 transition-all cursor-pointer">
+                        <button onClick={() => handleDelete(p.id)} className="text-red-600 hover:bg-red-100 rounded-sm p-1  transition-all cursor-pointer">
                           <Trash2 size={16} />
                         </button>
                       </div>
