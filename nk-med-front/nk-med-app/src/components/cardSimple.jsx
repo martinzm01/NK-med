@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 
 export default function TarjetaProducto({ id, nombre, precio, imagen, genero }) {
+  const precioFormateado = new Intl.NumberFormat('es-AR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(precio);
   return (
     <div className="group relative lg:mx-2">
       {/* Contenedor de Imagen */}
@@ -31,9 +35,9 @@ export default function TarjetaProducto({ id, nombre, precio, imagen, genero }) 
             {nombre}
           </Link>
         </h3>
-        
+        {/* Renderizamos el precio ya formateado */}
         <p className="mt-1 text-sm font-medium text-black">
-          ${precio}
+          ${precioFormateado}
         </p>
       </div>
     </div>

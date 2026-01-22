@@ -22,11 +22,11 @@ export default function PanelCatalogo() {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [formData, setFormData] = useState({
     nombre: "",
-    precio: 0,
+    precio: "",
     categoria: "Ambos",
     genero: "Unisex",
     color: "",
-    stock: 0,
+    stock: "",
     imagenes: [], 
     caracteristicas: [],
     talles: [], 
@@ -82,18 +82,29 @@ export default function PanelCatalogo() {
     return data.publicUrl;
   }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === "precio" || name === "stock" ? parseFloat(value) || 0 : value
-    }));
-  };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
 
-  const handleFileChange = (e) => {
+  if (name === "precio" || name === "stock") {
+    // Permite números y un solo punto decimal
+    if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  } else {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+};
+
+const handleFileChange = (e) => {
+  if (e.target.files && e.target.files.length > 0) {
     const files = Array.from(e.target.files);
-    setFormData(prev => ({ ...prev, imagenes: [...prev.imagenes, ...files] }));
-  };
+    setFormData(prev => ({ 
+      ...prev, 
+      imagenes: [...(prev.imagenes || []), ...files] 
+    }));
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,11 +118,11 @@ export default function PanelCatalogo() {
       );
       const productData = {
         nombre: formData.nombre,
-        precio: formData.precio,
+        precio: parseFloat(formData.precio) || 0,
         categoria: formData.categoria,
         genero: formData.genero,
         color: formData.color,
-        stock: formData.stock,
+        stock: parseInt(formData.stock) || 0,
         imagenes: imageUrls,
         descripcion: formData.descripcion,
         caracteristicas: formData.caracteristicas,
@@ -336,7 +347,12 @@ export default function PanelCatalogo() {
                     </td>
                     <td className="hidden md:table-cell p-4 text-[10px] text-gray-500 uppercase tracking-widest">{p.categoria}</td>
                     <td className="hidden sm:table-cell p-4 text-[10px] text-gray-500 uppercase tracking-widest">{p.genero}</td>
-                    <td className="p-4 text-xs font-bold text-teal-900">${p.precio}</td>
+                    <td className="p-4 text-xs font-bold text-teal-900">
+                    ${new Intl.NumberFormat('es-AR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    }).format(p.precio)}
+                  </td>
                     <td className="p-4 text-xs  text-teal-900">{p.stock}</td>
                     <td className="p-4">
                       <div className="flex  gap-3">
@@ -437,11 +453,11 @@ export default function PanelCatalogo() {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="border-b border-slate-100 pb-1">
                         <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Precio (USD)</label>
-                        <input type="number" name="precio" value={formData.precio} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
+                        <input type="text" name="precio" value={formData.precio} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
                       </div>
                       <div className="border-b border-slate-100 pb-1">
                         <label className="text-[9px] uppercase tracking-widest text-slate-600 block">Stock</label>
-                        <input type="number" name="stock" value={formData.stock} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
+                        <input type="text" inputMode="numeric" name="stock" value={formData.stock} onChange={handleInputChange} required className="w-full py-1 bg-transparent focus:outline-none text-teal-950 text-lg font-bold" />
                       </div>
                     </div>
                     {/* NUEVA SECCIÓN: GESTIÓN DE TALLES */}
